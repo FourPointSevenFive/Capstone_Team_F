@@ -1,7 +1,6 @@
 HELP.md
 .env
 .DS_Store
-/src/main/resources/application.properties
 .gradle
 build/
 !gradle/wrapper/gradle-wrapper.jar
@@ -38,3 +37,10 @@ out/
 
 ### VS Code ###
 .vscode/
+
+### .DS_Store ###
+**/.DS_Store
+
+### application.properties ###
+src/main/resources/application.properties
+
