@@ -72,7 +72,7 @@ public class AuthService {
 
         Authentication authentication = jwtProvider.getAuthentication(tokenRequestDto.getAccessToken());
 
-        // 저장소에서 User ID를 기반으로 Refresh Token 값 가져옴
+        // 저장소에서 Refresh Token 값 가져옴
         RefreshToken refreshToken = refreshTokenRepository.findById(tokenRequestDto.getRefreshToken())
                 .orElseThrow(() -> new LoginException(ExceptionCode.LOGGED_OUT_USER));
 

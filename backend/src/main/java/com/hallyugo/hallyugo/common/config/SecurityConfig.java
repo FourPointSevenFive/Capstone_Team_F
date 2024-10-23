@@ -19,6 +19,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig{
     // TODO
     // API path 수정
+    // JwtAccessDeniedHandler 구현
+
     public static final String PERMITTED_URI[] = {"/api/v1/auth/**"};
     private final JwtProvider jwtProvider;
     private final CorsConfig corsConfig;
