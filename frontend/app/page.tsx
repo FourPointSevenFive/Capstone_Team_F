@@ -1,6 +1,7 @@
 import Header from "./_components/Header";
 import ContentsBox from "./_components/ContentsBox";
 import CarouselMain from "./_components/Carousel";
+import SearchBar from "./_components/SearchBar";
 
 export default function Home() {
   return (
