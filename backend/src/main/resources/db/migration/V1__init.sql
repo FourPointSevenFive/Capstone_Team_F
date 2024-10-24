@@ -28,7 +28,7 @@ create table location
 create table content
 (
     id                  bigint not null auto_increment,
-    category            enum('K-POP', 'DRAMA', 'MOVIE', 'NOVEL'),
+    category            enum('K_POP', 'DRAMA', 'MOVIE', 'NOVEL'),
     title               varchar(255),
     description         text,
     content_image_url   varchar(255),
