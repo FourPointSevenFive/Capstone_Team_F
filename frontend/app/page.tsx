@@ -5,12 +5,15 @@ import SearchBar from "./_components/SearchBar";
 
 export default function Home() {
   return (
-    <div className="">
+    <div className="flex flex-col gap-4">
       <Header />
       <CarouselMain />
-      <SearchBar />
-      <main className="flex flex-col gap-10">
-        <ContentsBox title="K-Pop" />
+      <div className="flex justify-end">
+        <SearchBar />
+      </div>
+
+      <main className="flex flex-col gap-16">
+        <ContentsBox title="K - Pop" />
         <ContentsBox title="Drama" />
         <ContentsBox title="Movie" />
         <ContentsBox title="Novel" />

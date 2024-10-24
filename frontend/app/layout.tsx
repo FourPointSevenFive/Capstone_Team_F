@@ -33,7 +33,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${pretendard.variable}`}>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} px-8 py-5 antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} w-dvw px-8 py-5 antialiased`}
       >
         {children}
       </body>

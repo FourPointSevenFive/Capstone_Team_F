@@ -4,13 +4,12 @@ import LocationCard from "./_components/LocationCard";
 
 export default function Page() {
   return (
-    <>
+    <div>
       <Header />
       <div className="flex justify-between">
         <div>badge</div>
         <SearchBar />
       </div>
-      <div className="h-96 w-full border-2">map</div>
       <div className="flex flex-col gap-3">
         map list
         <LocationCard
@@ -26,6 +25,6 @@ export default function Page() {
           address="somewhere"
         />
       </div>
-    </>
+    </div>
   );
 }
