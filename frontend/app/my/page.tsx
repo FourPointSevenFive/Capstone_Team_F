@@ -18,7 +18,7 @@ export default function Page() {
   );
 }
 
-export const MyList = () => {
+const MyList = () => {
   const total = 91; // TODO: fetch from API
   return (
     <>
@@ -44,7 +44,7 @@ export const MyList = () => {
   );
 };
 
-export const MyProofShot = () => {
+const MyProofShot = () => {
   return (
     <div>
       <p>My Proof Shot</p>
@@ -64,7 +64,7 @@ export const MyProofShot = () => {
   );
 };
 
-export const MyStamps = () => {
+const MyStamps = () => {
   const total = 10; //  TODO: fetch from API
   return (
     <div>
@@ -87,7 +87,7 @@ export const MyStamps = () => {
   );
 };
 
-export const MyStats = () => {
+const MyStats = () => {
   return (
     <div className="flex flex-col">
       <p>my stats</p>
