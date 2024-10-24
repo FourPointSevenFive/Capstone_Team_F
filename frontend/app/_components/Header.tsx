@@ -4,7 +4,7 @@ import { LuHome } from "react-icons/lu";
 import { GrLocation } from "react-icons/gr";
 import { FaUser } from "react-icons/fa";
 import UnderBar from "./UnderBar";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 
 export default function Header() {
   const currentPath = usePathname();

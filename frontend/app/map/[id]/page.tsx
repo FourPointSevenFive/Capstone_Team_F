@@ -2,6 +2,7 @@ export default function Page({ params }: { params: { id: string } }) {
   const { id } = params;
   return (
     <div className="flex flex-col">
+      {id}
       <div>badge</div>
       <div className="flex justify-between">
         <p>title</p>

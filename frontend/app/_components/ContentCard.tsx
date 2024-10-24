@@ -4,7 +4,6 @@ export default function ContentCard({
   title,
   description,
   image,
-  link,
   hashtags,
 }: {
   title: string;
