@@ -7,7 +7,7 @@ export default function Header() {
         <Link href="./">HOME</Link>
         <Link href="./map">MAP</Link>
       </div>
-      <div>mypage icon</div>
+      <Link href="./my">mypage</Link>
     </div>
   );
 }

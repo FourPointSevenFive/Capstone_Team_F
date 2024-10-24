@@ -1,3 +1,4 @@
+import BackButton from "../_components/BackButton";
 import LocationCard from "../map/_components/LocationCard";
 import Stamp from "./_components/Stamp";
 
@@ -5,7 +6,7 @@ export default function Page() {
   return (
     <div className="flex flex-col gap-5">
       <div className="flex justify-between">
-        <div>backbutton</div>
+        <BackButton />
         <p>MY PAGE</p>
       </div>
       <div className="h-96 w-full border-2">map</div>
