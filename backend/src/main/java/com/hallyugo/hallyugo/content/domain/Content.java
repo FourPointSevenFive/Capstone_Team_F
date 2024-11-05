@@ -52,9 +52,11 @@ public class Content {
     @ColumnDefault("0")
     private Long favoriteCount;
 
+    @Column(name = "created_at")
     @CreatedDate
     private LocalDateTime createdAt;
 
+    @Column(name = "updated_at")
     @LastModifiedDate
     private LocalDateTime updatedAt;
 
