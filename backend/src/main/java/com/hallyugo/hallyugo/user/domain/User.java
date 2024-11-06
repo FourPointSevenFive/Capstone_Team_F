@@ -2,9 +2,8 @@ package com.hallyugo.hallyugo.user.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
-
+import org.springframework.data.annotation.CreatedDate;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 
 @Entity
 @Getter @Setter
@@ -27,14 +26,8 @@ public class User {
     private String nickname;
 
     @Column(name = "created_at", columnDefinition = "DATETIME(6)")
+    @CreatedDate
     private LocalDateTime createdAt;
-
-    @PrePersist
-    protected void onCreate() {
-        if (this.createdAt == null) {
-            this.createdAt = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
-        }
-    }
 
     public User(String username, String password, String nickname) {
         this.username = username;
