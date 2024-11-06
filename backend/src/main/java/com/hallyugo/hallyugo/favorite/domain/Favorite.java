@@ -38,11 +38,6 @@ public class Favorite {
     @CreatedDate
     private LocalDateTime createdAt;
 
-    public enum EntityType {
-        CONTENT,
-        LOCATION
-    }
-
     public Favorite(User user, Long entityId, EntityType entityType) {
         this.user = user;
         this.entityId = entityId;
