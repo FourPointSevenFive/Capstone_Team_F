@@ -7,11 +7,15 @@ public class ContentResponseDto {
     private String description;
     private String contentImageUrl;
 
-    public ContentResponseDto(Content content) {
+    private ContentResponseDto(Content content) {
         this.id = content.getId();
         this.category = content.getCategory();
         this.title = content.getTitle();
         this.description = content.getDescription();
         this.contentImageUrl = content.getContentImageUrl();
+    }
+
+    public static ContentResponseDto toDto(Content content) {
+        return new ContentResponseDto(content);
     }
 }
