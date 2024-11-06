@@ -70,7 +70,7 @@ const MyStamps = () => {
     <div>
       <p>My Stamps</p>
       <p>TOTAL {total} </p>
-      <div className="grid grid-cols-3 gap-2">
+      <div className="grid grid-cols-3 gap-y-3 gap-x-11 max-w-xl mx-auto">
         <Stamp title="Bongsuyuk" date="July 7, 2023" />
         <Stamp title="SKKU" date="July 7, 2023" />
         <Stamp title="Busan" date="July 7, 2023" />
