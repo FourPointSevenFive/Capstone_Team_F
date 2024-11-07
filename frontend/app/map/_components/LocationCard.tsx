@@ -16,9 +16,10 @@ export default function LocationCard({
 }) {
   return (
     <Link href={"/"} passHref>
-      <div className="verticle justify-left"></div>
+
       <div className="flex justify-between">
-        <p className="pb-4 pl-1 text-lg font-bold">{title}</p>
+        <p className="pl-1 text-lg font-bold">{title}</p>
+
         <div>
           <FaHeart className="h-10 w-10 pr-4 text-red-500" />
         </div>
