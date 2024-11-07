@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import {FaHeart} from 'react-icons/fa';
+import { FaHeart } from "react-icons/fa";
 
 export default function LocationCard({
   title,
@@ -16,16 +16,17 @@ export default function LocationCard({
 }) {
   return (
     <Link href={"/"} passHref>
-      <div className="verticle justify-left"></div>
-        <div className="flex justify-between">
-          <p className="text-lg font-bold pb-4 pl-1">{title}</p>
-          <div>
-            <FaHeart className="text-red-500 h-10 w-10 pr-4"/>
-          </div>
+      <div className="flex justify-between">
+        <p className="pl-1 text-lg font-bold">{title}</p>
+        <div>
+          <FaHeart className="h-10 w-10 pr-4 text-red-500" />
         </div>
-        <div className="w-full rounded-[12px] bg-neutral-200 p-4 min-h-[200px]">{photo}</div>
-        <p className="w-full pt-4 p-2">{description}</p>
-        <p className="w-full text-sm text-gray-500 p-2">{address}</p>
+      </div>
+      <div className="min-h-[200px] w-full rounded-[12px] bg-neutral-200 p-4">
+        {photo}
+      </div>
+      <p className="w-full p-2 pt-4">{description}</p>
+      <p className="w-full p-2 text-sm text-gray-500">{address}</p>
     </Link>
   );
 }

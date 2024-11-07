@@ -30,8 +30,9 @@ export default function Header() {
           </Link>
         </div>
       </div>
-      <Link href="./my">
+      <Link href="./my" className="flex flex-col items-center gap-1">
         <FaUser size={20} />
+        {currentPath === "/my" && <UnderBar isMy={true} />}
       </Link>
     </div>
   );
