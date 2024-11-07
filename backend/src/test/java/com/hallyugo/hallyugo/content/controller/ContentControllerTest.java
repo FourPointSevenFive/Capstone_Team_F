@@ -15,6 +15,8 @@ import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -30,7 +32,9 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 class ContentControllerTest {
     private static final String BASE_URL = "/api/v1/content";
     private static final String INITIAL_CONTENTS_PATH = BASE_URL + "/initial";
+    private static final String CATEGORY_QUERY_STRING = "category=";
     private static final int INITIAL_CONTENTS_SIZE_PER_CATEGORY = 2;
+    private static final int TOTAL_CONTENTS_SIZE_PER_CATEGORY = 3;
 
     @Autowired
     private MockMvc mockMvc;
@@ -56,6 +60,26 @@ class ContentControllerTest {
                 .andExpect(jsonPath("$.K_POP.length()").value(INITIAL_CONTENTS_SIZE_PER_CATEGORY))
                 .andExpect(jsonPath("$.MOVIE.length()").value(INITIAL_CONTENTS_SIZE_PER_CATEGORY))
                 .andExpect(jsonPath("$.NOVEL.length()").value(INITIAL_CONTENTS_SIZE_PER_CATEGORY))
+                .andDo(print());
+    }
+
+    @DisplayName("주어진 카테고리에 해당하는 전체 콘텐츠 조회 시 정상 결과가 반환되어야 한다.")
+    @WithMockUser("user") // to avoid 401 error
+    @ParameterizedTest
+    @EnumSource(Category.class)
+    void 카테고리별_전체_콘텐츠_조회_성공_테스트(Category category) throws Exception {
+        // given
+        List<ContentResponseDto> result = generateTotalMockContentsByCategory(category);
+        when(contentService.getContentsByCategory(category.name())).thenReturn(result);
+
+        // when
+        ResultActions resultActions = mockMvc.perform(
+                MockMvcRequestBuilders.get(BASE_URL + "?" + CATEGORY_QUERY_STRING + category.name())
+                        .contentType(MediaType.APPLICATION_JSON));
+
+        // then
+        resultActions.andExpect(status().isOk())
+                .andExpect(jsonPath("$.size()").value(TOTAL_CONTENTS_SIZE_PER_CATEGORY))
                 .andDo(print());
     }
 
@@ -86,5 +110,17 @@ class ContentControllerTest {
         result.put(Category.NOVEL.name(), novelContentDtos);
 
         return result;
+    }
+
+    private List<ContentResponseDto> generateTotalMockContentsByCategory(Category category) {
+        List<Content> contents = new ArrayList<>();
+
+        for (int i = 0; i < TOTAL_CONTENTS_SIZE_PER_CATEGORY; i++) {
+            contents.add(new Content(category, category.name() + "Title" + i, category.name() + "Desc" + i,
+                    category.name() + "Url" + i));
+
+        }
+
+        return contents.stream().map(ContentResponseDto::toDto).toList();
     }
 }
