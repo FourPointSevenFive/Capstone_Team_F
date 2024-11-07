@@ -9,6 +9,7 @@ export default async function Page({ params }: { params: { id: string } }) {
   return (
     <div className="flex flex-col items-center gap-5">
       <div className="self-end">
+        <>{id}</>
         <CustomBadge title="BTS" category="kpop" />
       </div>
       <div className="flex w-full justify-center self-start">
