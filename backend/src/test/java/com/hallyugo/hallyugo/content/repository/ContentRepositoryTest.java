@@ -21,6 +21,7 @@ import org.springframework.test.context.ActiveProfiles;
 class ContentRepositoryTest {
     private static final int PAGE_NUMBER = 0;
     private static final int INITIAL_CONTENTS_SIZE_PER_CATEGORY = 2;
+    private static final int TOTAL_CONTENTS_SIZE_PER_CATEGORY = 3;
 
     @Autowired
     private ContentRepository contentRepository;
@@ -55,5 +56,16 @@ class ContentRepositoryTest {
         // then
         Assertions.assertThat(fetchedContents).hasSize(INITIAL_CONTENTS_SIZE_PER_CATEGORY)
                 .extracting("category").containsExactly(category, category);
+    }
+
+    @DisplayName("주어진 카테고리에 해당하는 전체 콘텐츠를 조회할 수 있어야 한다.")
+    @ParameterizedTest
+    @EnumSource(Category.class)
+    void 카테고리별_전체_콘텐츠_조회_성공_테스트(Category category) {
+        // when
+        List<Content> fetchedContents = contentRepository.findByCategory(category);
+
+        // then
+        Assertions.assertThat(fetchedContents).hasSize(TOTAL_CONTENTS_SIZE_PER_CATEGORY);
     }
 }
