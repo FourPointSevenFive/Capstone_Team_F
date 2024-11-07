@@ -7,9 +7,9 @@ export default function Page() {
     <div className="flex flex-col gap-5">
       <div className="flex justify-between">
         <BackButton />
-        <p>MY PAGE</p>
+        <p className="text-xl">MY PAGE</p>
       </div>
-      <div className="h-96 w-full border-2">map</div>
+      <div className="w-full rounded-[12px] bg-neutral-200 p-4 h-96">map</div>
       <MyList />
       <MyProofShot />
       <MyStamps />
@@ -22,22 +22,22 @@ const MyList = () => {
   const total = 91; // TODO: fetch from API
   return (
     <>
-      <div className="flex justify-between">
-        <p>MY LIST</p>
-        <p>TOTAL {total}</p>
+      <div className="flex justify-between pt-10 pl-1 pr-1">
+        <p className="text-2xl">MY LIST</p>
+        <p className="text-xl">TOTAL {total}</p>
       </div>
       <div className="flex flex-col gap-3">
         <LocationCard
           title="Bongsuyuk"
           photo="photohere"
-          description="mookup"
-          address="~~ "
+          description="Jungkook’s favorite restaurant. They serve boiled pork and pork nabe.Be aware, there’s usually a wait!"
+          address="39-16, Ingye-ro 94beon-gil, Paldal-gu, Suwon-si, Gyeonggi-do"
         />
         <LocationCard
           title="skku"
           photo="photo"
           description="blabla"
-          address="somewhere"
+          address="39-16, Ingye-ro 94beon-gil, Paldal-gu, Suwon-si, Gyeonggi-do"
         />
       </div>
     </>
@@ -46,8 +46,9 @@ const MyList = () => {
 
 const MyProofShot = () => {
   return (
-    <div>
-      <p>My Proof Shot</p>
+    <div className="pr-1 pl-1">
+      <p className="text-2xl">Proof Shot</p>
+      <p className="text-lg">My Proof Shot</p>
       <div className="grid grid-cols-3 gap-2">
         <div>pic</div>
         <div>pic</div>
@@ -91,7 +92,7 @@ const MyStats = () => {
   return (
     <div className="flex flex-col">
       <p>my stats</p>
-      <div>title badge</div>
+      <div className="flex justify-center">title badge</div>
       <div className="flex justify-end">
         <div>circle graph</div>
         <div>total, category count</div>
