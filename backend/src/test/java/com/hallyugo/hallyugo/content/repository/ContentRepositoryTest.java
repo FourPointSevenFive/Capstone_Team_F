@@ -5,17 +5,17 @@ import com.hallyugo.hallyugo.content.domain.Content;
 import java.util.ArrayList;
 import java.util.List;
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.ActiveProfiles;
 
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @ActiveProfiles("test")
 @DataJpaTest
 class ContentRepositoryTest {
@@ -26,7 +26,7 @@ class ContentRepositoryTest {
     @Autowired
     private ContentRepository contentRepository;
 
-    @BeforeAll
+    @BeforeEach
     void setUp() {
         List<Content> contents = new ArrayList<>();
         contents.add(new Content(Category.DRAMA, "dramaTitle1", "dramaDesc1", "dramaUrl1"));
@@ -67,5 +67,29 @@ class ContentRepositoryTest {
 
         // then
         Assertions.assertThat(fetchedContents).hasSize(TOTAL_CONTENTS_SIZE_PER_CATEGORY);
+    }
+
+    @DisplayName("제목에 키워드가 포함된 전체 콘텐츠를 조회할 수 있어야 한다.")
+    @ParameterizedTest
+    @ValueSource(strings = {"DraMa", "drama", "Drama", "DRAMA"})
+    void 키워드_검색_성공_테스트(String keyword) {
+        // when
+        List<Content> fetchedContents = contentRepository.findByTitleContainingIgnoreCase(keyword);
+
+        // then
+        Assertions.assertThat(fetchedContents).hasSize(TOTAL_CONTENTS_SIZE_PER_CATEGORY);
+    }
+
+    @DisplayName("제목에 키워드가 포함된 콘텐츠가 없는 경우 빈 리스트가 반환되어야 한다.")
+    @Test
+    void 키워드_검색_실패_테스트() {
+        // given
+        String nonMatchingKeyword = "nonMatchingKeyword";
+
+        // when
+        List<Content> fetchedContents = contentRepository.findByTitleContainingIgnoreCase(nonMatchingKeyword);
+
+        // then
+        Assertions.assertThat(fetchedContents).isEmpty();
     }
 }
