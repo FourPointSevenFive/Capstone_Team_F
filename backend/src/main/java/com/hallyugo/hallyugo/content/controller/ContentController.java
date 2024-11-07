@@ -5,6 +5,7 @@ import com.hallyugo.hallyugo.content.service.ContentService;
 import java.util.List;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,9 +24,20 @@ public class ContentController {
         return ResponseEntity.ok(result);
     }
 
-    @GetMapping
-    public ResponseEntity<List<ContentResponseDto>> getContents(@RequestParam String category) {
+    @GetMapping(params = "category")
+    public ResponseEntity<List<ContentResponseDto>> getContentsByCategory(@RequestParam String category) {
         List<ContentResponseDto> result = contentService.getContentsByCategory(category);
+        return ResponseEntity.ok(result);
+    }
+
+    @GetMapping(params = "keyword")
+    public ResponseEntity<?> getContentsByKeyword(@RequestParam String keyword) {
+        List<ContentResponseDto> result = contentService.getContentsByKeyword(keyword);
+
+        if (result.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No results found");
+        }
+
         return ResponseEntity.ok(result);
     }
 }
