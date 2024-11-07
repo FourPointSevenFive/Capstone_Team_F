@@ -45,7 +45,7 @@ class ContentRepositoryTest {
         contentRepository.saveAll(contents);
     }
 
-    @DisplayName("주어진 카테고리에 속하는 2개의 랜덤 콘텐츠가 조회되어야 한다.")
+    @DisplayName("주어진 카테고리에 해당하는 2개의 랜덤 콘텐츠가 조회되어야 한다.")
     @ParameterizedTest
     @EnumSource(Category.class)
     void 카테고리별_랜덤_콘텐츠_조회_성공_테스트(Category category) {
