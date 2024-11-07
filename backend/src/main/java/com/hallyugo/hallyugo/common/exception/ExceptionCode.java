@@ -7,6 +7,10 @@ import lombok.RequiredArgsConstructor;
 @Getter
 public enum ExceptionCode {
 
+    // User
+    UNAUTHORIZED_USER(401, "Unauthorized user. You need to login"),
+    FORBIDDEN_USER(403, "Forbidden"),
+
     // Sign in / Log in
     DUPLICATE_USER_REGISTRATION(2001, "User already registered"),
     NOT_FOUND_USERNAME(2002, "User can not find in database"),
