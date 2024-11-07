@@ -9,6 +9,9 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface ContentRepository extends JpaRepository<Content, Long> {
+
     @Query("SELECT c FROM Content c WHERE c.category = :category ORDER BY RAND()")
     List<Content> findRandomContentsByCategory(@Param("category") Category category, Pageable pageable);
+
+    List<Content> findByCategory(Category category);
 }
