@@ -1,5 +1,3 @@
-"use client";
-
 import Header from "@/app/_components/Header";
 import SearchBar from "../_components/SearchBar";
 import LocationCard from "./_components/LocationCard";
@@ -13,6 +11,9 @@ import {
   DrawerTrigger,
 } from "@/components/ui/drawer";
 import { BsChevronDoubleUp } from "react-icons/bs";
+import MapContainer from "../_components/Map";
+import MapSkeleton from "../_components/MapSkeleton";
+import { Suspense } from "react";
 
 export default function Page() {
   return (
@@ -22,7 +23,10 @@ export default function Page() {
         <CustomBadge title="BTS" category="kpop" />
         <SearchBar />
       </div>
-      <div className="h-96 w-full bg-neutral-400" />
+      <Suspense fallback={<MapSkeleton />}>
+        <MapContainer />
+      </Suspense>
+
       <div className="border-1 flex flex-col justify-center gap-3 rounded-2xl border border-neutral-100 p-2">
         <CardList />
         <LocationCard
