@@ -15,9 +15,12 @@ export default function LocationCard({
   address: string;
 }) {
   return (
-    <Link href={"/"} passHref>
+    <Link href={"/map/2"}>
+      <div className="verticle justify-left"></div>
+
       <div className="flex justify-between">
         <p className="pl-1 text-lg font-bold">{title}</p>
+
         <div>
           <FaHeart className="h-10 w-10 pr-4 text-red-500" />
         </div>
