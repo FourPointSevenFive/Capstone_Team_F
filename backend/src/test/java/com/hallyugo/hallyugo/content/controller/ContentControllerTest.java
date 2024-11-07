@@ -2,6 +2,7 @@ package com.hallyugo.hallyugo.content.controller;
 
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -10,6 +11,8 @@ import com.hallyugo.hallyugo.content.domain.Content;
 import com.hallyugo.hallyugo.content.domain.ContentResponseDto;
 import com.hallyugo.hallyugo.content.service.ContentService;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,12 +30,14 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+@WithMockUser("user") // to avoid 401 error
 @MockBean(JpaMetamodelMappingContext.class)
 @WebMvcTest(controllers = ContentController.class)
 class ContentControllerTest {
     private static final String BASE_URL = "/api/v1/content";
     private static final String INITIAL_CONTENTS_PATH = BASE_URL + "/initial";
     private static final String CATEGORY_QUERY_STRING = "category=";
+    private static final String KEYWORD_QUERY_STRING = "keyword=";
     private static final int INITIAL_CONTENTS_SIZE_PER_CATEGORY = 2;
     private static final int TOTAL_CONTENTS_SIZE_PER_CATEGORY = 3;
 
@@ -43,7 +48,6 @@ class ContentControllerTest {
     private ContentService contentService;
 
     @DisplayName("카테고리별 랜덤 콘텐츠 조회 시 정상 결과가 반환되어야 한다.")
-    @WithMockUser("user") // to avoid 401 error
     @Test
     void 카테고리별_랜덤_콘텐츠_조회_성공_테스트() throws Exception {
         // given
@@ -64,7 +68,6 @@ class ContentControllerTest {
     }
 
     @DisplayName("주어진 카테고리에 해당하는 전체 콘텐츠 조회 시 정상 결과가 반환되어야 한다.")
-    @WithMockUser("user") // to avoid 401 error
     @ParameterizedTest
     @EnumSource(Category.class)
     void 카테고리별_전체_콘텐츠_조회_성공_테스트(Category category) throws Exception {
@@ -81,6 +84,43 @@ class ContentControllerTest {
         resultActions.andExpect(status().isOk())
                 .andExpect(jsonPath("$.size()").value(TOTAL_CONTENTS_SIZE_PER_CATEGORY))
                 .andDo(print());
+    }
+
+    @DisplayName("제목에 키워드가 포함된 전체 콘텐츠 조회 시 정상 결과가 반환되어야 한다.")
+    @Test
+    void 키워드_검색_성공_테스트() throws Exception {
+        // given
+        int size = 5;
+        String keyword = "matchingKeyword";
+        List<ContentResponseDto> result = generateMockContentsContainingKeyword(keyword, size);
+        when(contentService.getContentsByKeyword(keyword)).thenReturn(result);
+
+        // when
+        ResultActions resultActions = mockMvc.perform(
+                MockMvcRequestBuilders.get(BASE_URL + "?" + KEYWORD_QUERY_STRING + keyword)
+                        .contentType(MediaType.APPLICATION_JSON));
+
+        // then
+        resultActions.andExpect(status().isOk())
+                .andExpect(jsonPath("$.size()").value(size))
+                .andDo(print());
+    }
+
+    @DisplayName("제목에 키워드가 포함된 콘텐츠가 없는 경우 NOT FOUND 코드가 응답되어야 한다.")
+    @Test
+    void 키워드_검색_실패_테스트() throws Exception {
+        // given
+        String nonMatchingKeyword = "nonMatchingKeyword";
+        when(contentService.getContentsByKeyword(nonMatchingKeyword)).thenReturn(List.of());
+
+        // when
+        ResultActions resultActions = mockMvc.perform(
+                MockMvcRequestBuilders.get(BASE_URL + "?" + KEYWORD_QUERY_STRING + nonMatchingKeyword)
+                        .contentType(MediaType.APPLICATION_JSON));
+
+        // then
+        resultActions.andExpect(status().isNotFound())
+                .andExpect(content().string("No results found"));
     }
 
     private Map<String, List<ContentResponseDto>> generateRandomMockContentsByCategory() {
@@ -119,6 +159,19 @@ class ContentControllerTest {
             contents.add(new Content(category, category.name() + "Title" + i, category.name() + "Desc" + i,
                     category.name() + "Url" + i));
 
+        }
+
+        return contents.stream().map(ContentResponseDto::toDto).toList();
+    }
+
+    private List<ContentResponseDto> generateMockContentsContainingKeyword(String keyword, int size) {
+        List<Content> contents = new ArrayList<>();
+        List<Category> categories = Arrays.asList(Category.values());
+
+        for (int i = 0; i < size; i++) {
+            Collections.shuffle(categories);
+            contents.add(new Content(categories.getFirst(), keyword + i, "desc" + i,
+                    "url" + i));
         }
 
         return contents.stream().map(ContentResponseDto::toDto).toList();
