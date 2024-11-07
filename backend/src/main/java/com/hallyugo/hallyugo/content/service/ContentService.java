@@ -39,4 +39,9 @@ public class ContentService {
         List<Content> contents = contentRepository.findByCategory(Category.valueOf(category));
         return contents.stream().map(ContentResponseDto::toDto).toList();
     }
+
+    public List<ContentResponseDto> getContentsByKeyword(String keyword) {
+        List<Content> contents = contentRepository.findByTitleContainingIgnoreCase(keyword);
+        return contents.stream().map(ContentResponseDto::toDto).toList();
+    }
 }
