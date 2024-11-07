@@ -12,6 +12,8 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -24,6 +26,7 @@ import org.springframework.test.context.ActiveProfiles;
 class ContentServiceTest {
     private static final int CATEGORY_COUNT = 4;
     private static final int INITIAL_CONTENTS_SIZE_PER_CATEGORY = 2;
+    private static final int TOTAL_CONTENTS_SIZE_PER_CATEGORY = 3;
 
     @MockBean
     private RedissonClient redissonClient;
@@ -65,5 +68,16 @@ class ContentServiceTest {
         for (Category category : Category.values()) {
             Assertions.assertThat(fetchedResult.get(category.name())).hasSize(INITIAL_CONTENTS_SIZE_PER_CATEGORY);
         }
+    }
+
+    @DisplayName("주어진 카테고리에 해당하는 전체 콘텐츠를 조회할 수 있어야 한다.")
+    @ParameterizedTest
+    @EnumSource(Category.class)
+    void 카테고리별_전체_콘텐츠_조회_성공_테스트(Category category) {
+        // when
+        List<ContentResponseDto> fetchedContents = contentService.getContentsByCategory(category.name());
+
+        // then
+        Assertions.assertThat(fetchedContents).hasSize(TOTAL_CONTENTS_SIZE_PER_CATEGORY);
     }
 }
