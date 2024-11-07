@@ -1,6 +1,9 @@
 package com.hallyugo.hallyugo.auth;
 
 import com.hallyugo.hallyugo.auth.annotation.AuthUser;
+import com.hallyugo.hallyugo.common.exception.ExceptionCode;
+import com.hallyugo.hallyugo.common.exception.InvalidJwtException;
+import com.hallyugo.hallyugo.common.exception.LoginException;
 import com.hallyugo.hallyugo.user.domain.User;
 import com.hallyugo.hallyugo.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -50,10 +53,10 @@ public class AuthUserArgumentResolver implements HandlerMethodArgumentResolver {
                 log.info("userId = {}", userId);
 
                 return userRepository.findById(userId)
-                        .orElseThrow(() -> new IllegalArgumentException("User not found"));
+                        .orElseThrow(() -> new LoginException(ExceptionCode.NOT_FOUND_USERID));
             }
         }
 
-        throw new IllegalArgumentException("Invalid or missing token");
+        throw new InvalidJwtException(ExceptionCode.INVALID_TOKEN);
     }
 }

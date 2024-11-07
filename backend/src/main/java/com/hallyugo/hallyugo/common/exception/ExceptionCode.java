@@ -14,8 +14,9 @@ public enum ExceptionCode {
     // Sign in / Log in
     DUPLICATE_USER_REGISTRATION(2001, "User already registered"),
     NOT_FOUND_USERNAME(2002, "User can not find in database"),
-    LOGGED_OUT_USER(2003, "User has been logged out."),
-    TOKEN_USER_MISMATCH(2004, "User information in the token does not match."),
+    NOT_FOUND_USERID(2003, "User can not find in database"),
+    LOGGED_OUT_USER(2004, "User has been logged out."),
+    TOKEN_USER_MISMATCH(2005, "User information in the token does not match."),
 
     // Auth
     INVALID_TOKEN(3001, "Invalid JWT token"),
