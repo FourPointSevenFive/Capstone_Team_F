@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { Coordinates } from "@/app/types/naverMaps";
 import Map from "./NaverMap";
+import MapSkeleton from "./MapSkeleton";
 
 export default function MapContainer() {
   const [loc, setLoc] = useState<Coordinates>();
@@ -17,5 +18,5 @@ export default function MapContainer() {
     initLocation();
   }, []);
 
-  return loc && <Map loc={loc} />;
+  return loc ? <Map loc={loc} /> : <MapSkeleton />;
 }
