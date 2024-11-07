@@ -1,5 +1,8 @@
 package com.hallyugo.hallyugo.content.service;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import com.hallyugo.hallyugo.common.exception.EntityNotFoundException;
 import com.hallyugo.hallyugo.content.domain.Category;
 import com.hallyugo.hallyugo.content.domain.Content;
 import com.hallyugo.hallyugo.content.domain.ContentResponseDto;
@@ -61,7 +64,7 @@ class ContentServiceTest {
     @Test
     void 카테고리별_랜덤_콘텐츠_조회_성공_테스트() {
         // when
-        Map<String, List<ContentResponseDto>> fetchedResult = contentService.getRandomContentsByCategory();
+        Map<String, List<ContentResponseDto>> fetchedResult = contentService.getRandomContents();
 
         // then
         Assertions.assertThat(fetchedResult).hasSize(CATEGORY_COUNT);
@@ -93,16 +96,13 @@ class ContentServiceTest {
         Assertions.assertThat(fetchedContents).hasSize(TOTAL_CONTENTS_SIZE_PER_CATEGORY);
     }
 
-    @DisplayName("제목에 키워드가 포함된 콘텐츠가 없는 경우 빈 리스트가 반환되어야 한다.")
+    @DisplayName("제목에 키워드가 포함된 콘텐츠가 없는 경우 EntityNotFoundException이 발생해야 한다.")
     @Test
     void 키워드_검색_실패_테스트() {
         // given
         String nonMatchingKeyword = "nonMatchingKeyword";
 
-        // when
-        List<ContentResponseDto> fetchedContents = contentService.getContentsByKeyword(nonMatchingKeyword);
-
-        // then
-        Assertions.assertThat(fetchedContents).isEmpty();
+        // when & then
+        assertThrows(EntityNotFoundException.class, () -> contentService.getContentsByKeyword(nonMatchingKeyword));
     }
 }
