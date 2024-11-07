@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +31,6 @@ class ContentControllerTest {
     private static final String BASE_URL = "/api/v1/content";
     private static final String INITIAL_CONTENTS_PATH = BASE_URL + "/initial";
     private static final int INITIAL_CONTENTS_SIZE_PER_CATEGORY = 2;
-    private Map<String, List<ContentResponseDto>> result;
 
     @Autowired
     private MockMvc mockMvc;
@@ -40,9 +38,29 @@ class ContentControllerTest {
     @MockBean
     private ContentService contentService;
 
-    @BeforeEach
-    void setUp() {
-        result = new HashMap<>();
+    @DisplayName("카테고리별 랜덤 콘텐츠 조회 시 정상 결과가 반환되어야 한다.")
+    @WithMockUser("user") // to avoid 401 error
+    @Test
+    void 카테고리별_랜덤_콘텐츠_조회_성공_테스트() throws Exception {
+        // given
+        Map<String, List<ContentResponseDto>> result = generateRandomMockContentsByCategory();
+        when(contentService.getRandomContentsByCategory()).thenReturn(result);
+
+        // when
+        ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.get(INITIAL_CONTENTS_PATH)
+                .contentType(MediaType.APPLICATION_JSON));
+
+        // then
+        resultActions.andExpect(status().isOk())
+                .andExpect(jsonPath("$.DRAMA.length()").value(INITIAL_CONTENTS_SIZE_PER_CATEGORY))
+                .andExpect(jsonPath("$.K_POP.length()").value(INITIAL_CONTENTS_SIZE_PER_CATEGORY))
+                .andExpect(jsonPath("$.MOVIE.length()").value(INITIAL_CONTENTS_SIZE_PER_CATEGORY))
+                .andExpect(jsonPath("$.NOVEL.length()").value(INITIAL_CONTENTS_SIZE_PER_CATEGORY))
+                .andDo(print());
+    }
+
+    private Map<String, List<ContentResponseDto>> generateRandomMockContentsByCategory() {
+        Map<String, List<ContentResponseDto>> result = new HashMap<>();
         List<Content> dramaContents = new ArrayList<>();
         List<Content> kpopContents = new ArrayList<>();
         List<Content> movieContents = new ArrayList<>();
@@ -66,25 +84,7 @@ class ContentControllerTest {
         result.put(Category.K_POP.name(), kpopContentDtos);
         result.put(Category.MOVIE.name(), movieContentDtos);
         result.put(Category.NOVEL.name(), novelContentDtos);
-    }
 
-    @DisplayName("카테고리별 랜덤 콘텐츠 조회 시 정상 결과가 반환되어야 한다.")
-    @WithMockUser("user") // to avoid 401 error
-    @Test
-    void 카테고리별_랜덤_콘텐츠_조회_성공_테스트() throws Exception {
-        // given
-        when(contentService.getRandomContentsByCategory()).thenReturn(result);
-
-        // when
-        ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.get(INITIAL_CONTENTS_PATH)
-                .contentType(MediaType.APPLICATION_JSON));
-
-        // then
-        resultActions.andExpect(status().isOk())
-                .andExpect(jsonPath("$.DRAMA.length()").value(INITIAL_CONTENTS_SIZE_PER_CATEGORY))
-                .andExpect(jsonPath("$.K_POP.length()").value(INITIAL_CONTENTS_SIZE_PER_CATEGORY))
-                .andExpect(jsonPath("$.MOVIE.length()").value(INITIAL_CONTENTS_SIZE_PER_CATEGORY))
-                .andExpect(jsonPath("$.NOVEL.length()").value(INITIAL_CONTENTS_SIZE_PER_CATEGORY))
-                .andDo(print());
+        return result;
     }
 }
