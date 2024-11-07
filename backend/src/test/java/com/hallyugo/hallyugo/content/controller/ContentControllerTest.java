@@ -1,11 +1,13 @@
 package com.hallyugo.hallyugo.content.controller;
 
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.hallyugo.hallyugo.common.exception.EntityNotFoundException;
+import com.hallyugo.hallyugo.common.exception.ExceptionCode;
 import com.hallyugo.hallyugo.content.domain.Category;
 import com.hallyugo.hallyugo.content.domain.Content;
 import com.hallyugo.hallyugo.content.domain.ContentResponseDto;
@@ -52,7 +54,7 @@ class ContentControllerTest {
     void 카테고리별_랜덤_콘텐츠_조회_성공_테스트() throws Exception {
         // given
         Map<String, List<ContentResponseDto>> result = generateRandomMockContentsByCategory();
-        when(contentService.getRandomContentsByCategory()).thenReturn(result);
+        when(contentService.getRandomContents()).thenReturn(result);
 
         // when
         ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.get(INITIAL_CONTENTS_PATH)
@@ -106,12 +108,13 @@ class ContentControllerTest {
                 .andDo(print());
     }
 
-    @DisplayName("제목에 키워드가 포함된 콘텐츠가 없는 경우 NOT FOUND 코드가 응답되어야 한다.")
+    @DisplayName("제목에 키워드가 포함된 콘텐츠가 없는 경우 EntityNotFoundException이 발생해야 한다.")
     @Test
     void 키워드_검색_실패_테스트() throws Exception {
         // given
         String nonMatchingKeyword = "nonMatchingKeyword";
-        when(contentService.getContentsByKeyword(nonMatchingKeyword)).thenReturn(List.of());
+        given(contentService.getContentsByKeyword(nonMatchingKeyword)).willThrow(
+                new EntityNotFoundException(ExceptionCode.ENTITY_NOT_FOUND));
 
         // when
         ResultActions resultActions = mockMvc.perform(
@@ -120,7 +123,8 @@ class ContentControllerTest {
 
         // then
         resultActions.andExpect(status().isNotFound())
-                .andExpect(content().string("No results found"));
+                .andExpect(jsonPath("$.code").value(ExceptionCode.ENTITY_NOT_FOUND.getCode()))
+                .andExpect(jsonPath("$.message").value(ExceptionCode.ENTITY_NOT_FOUND.getMessage()));
     }
 
     private Map<String, List<ContentResponseDto>> generateRandomMockContentsByCategory() {
