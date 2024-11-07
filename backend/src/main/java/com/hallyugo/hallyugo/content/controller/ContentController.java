@@ -5,7 +5,6 @@ import com.hallyugo.hallyugo.content.service.ContentService;
 import java.util.List;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,7 +19,7 @@ public class ContentController {
 
     @GetMapping("/initial")
     public ResponseEntity<Map<String, List<ContentResponseDto>>> getRandomContents() {
-        Map<String, List<ContentResponseDto>> result = contentService.getRandomContentsByCategory();
+        Map<String, List<ContentResponseDto>> result = contentService.getRandomContents();
         return ResponseEntity.ok(result);
     }
 
@@ -31,13 +30,8 @@ public class ContentController {
     }
 
     @GetMapping(params = "keyword")
-    public ResponseEntity<?> getContentsByKeyword(@RequestParam String keyword) {
+    public ResponseEntity<List<ContentResponseDto>> getContentsByKeyword(@RequestParam String keyword) {
         List<ContentResponseDto> result = contentService.getContentsByKeyword(keyword);
-
-        if (result.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No results found");
-        }
-
         return ResponseEntity.ok(result);
     }
 }
