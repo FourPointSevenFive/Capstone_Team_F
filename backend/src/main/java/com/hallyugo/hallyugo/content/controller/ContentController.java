@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RequiredArgsConstructor
@@ -19,6 +20,12 @@ public class ContentController {
     @GetMapping("/initial")
     public ResponseEntity<Map<String, List<ContentResponseDto>>> getRandomContents() {
         Map<String, List<ContentResponseDto>> result = contentService.getRandomContentsByCategory();
+        return ResponseEntity.ok(result);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<ContentResponseDto>> getContents(@RequestParam String category) {
+        List<ContentResponseDto> result = contentService.getContentsByCategory(category);
         return ResponseEntity.ok(result);
     }
 }
