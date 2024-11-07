@@ -48,14 +48,14 @@ class ContentControllerTest {
         List<Content> movieContents = new ArrayList<>();
         List<Content> novelContents = new ArrayList<>();
 
-        dramaContents.add(new Content(Category.DRAMA, "dramaTitle1", "dramaDesc1", "dramaUrl1", 1L));
-        dramaContents.add(new Content(Category.DRAMA, "dramaTitle2", "dramaDesc2", "dramaUrl2", 2L));
-        kpopContents.add(new Content(Category.K_POP, "kpopTitle1", "kpopDesc1", "kpopUrl1", 3L));
-        kpopContents.add(new Content(Category.K_POP, "kpopTitle2", "kpopDesc2", "kpopUrl2", 4L));
-        movieContents.add(new Content(Category.MOVIE, "movieTitle1", "movieDesc1", "movieUrl1", 5L));
-        movieContents.add(new Content(Category.MOVIE, "movieTitle2", "movieDesc2", "movieUrl2", 6L));
-        novelContents.add(new Content(Category.NOVEL, "novelTitle1", "novelDesc1", "novelUrl1", 7L));
-        novelContents.add(new Content(Category.NOVEL, "novelTitle2", "novelDesc2", "novelUrl2", 8L));
+        dramaContents.add(new Content(Category.DRAMA, "dramaTitle1", "dramaDesc1", "dramaUrl1"));
+        dramaContents.add(new Content(Category.DRAMA, "dramaTitle2", "dramaDesc2", "dramaUrl2"));
+        kpopContents.add(new Content(Category.K_POP, "kpopTitle1", "kpopDesc1", "kpopUrl1"));
+        kpopContents.add(new Content(Category.K_POP, "kpopTitle2", "kpopDesc2", "kpopUrl2"));
+        movieContents.add(new Content(Category.MOVIE, "movieTitle1", "movieDesc1", "movieUrl1"));
+        movieContents.add(new Content(Category.MOVIE, "movieTitle2", "movieDesc2", "movieUrl2"));
+        novelContents.add(new Content(Category.NOVEL, "novelTitle1", "novelDesc1", "novelUrl1"));
+        novelContents.add(new Content(Category.NOVEL, "novelTitle2", "novelDesc2", "novelUrl2"));
 
         List<ContentResponseDto> dramaContentDtos = dramaContents.stream().map(ContentResponseDto::toDto).toList();
         List<ContentResponseDto> kpopContentDtos = kpopContents.stream().map(ContentResponseDto::toDto).toList();

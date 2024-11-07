@@ -38,14 +38,14 @@ class ContentServiceTest {
     void 카테고리별_랜덤_콘텐츠_조회_성공_테스트() {
         // given
         List<Content> contents = new ArrayList<>();
-        contents.add(new Content(Category.DRAMA, "dramaTitle1", "dramaDesc1", "dramaUrl1", 1L));
-        contents.add(new Content(Category.DRAMA, "dramaTitle2", "dramaDesc2", "dramaUrl2", 2L));
-        contents.add(new Content(Category.K_POP, "kpopTitle1", "kpopDesc1", "kpopUrl1", 3L));
-        contents.add(new Content(Category.K_POP, "kpopTitle2", "kpopDesc2", "kpopUrl2", 4L));
-        contents.add(new Content(Category.MOVIE, "movieTitle1", "movieDesc1", "movieUrl1", 5L));
-        contents.add(new Content(Category.MOVIE, "movieTitle2", "movieDesc2", "movieUrl2", 6L));
-        contents.add(new Content(Category.NOVEL, "novelTitle1", "novelDesc1", "novelUrl1", 7L));
-        contents.add(new Content(Category.NOVEL, "novelTitle2", "novelDesc2", "novelUrl2", 8L));
+        contents.add(new Content(Category.DRAMA, "dramaTitle1", "dramaDesc1", "dramaUrl1"));
+        contents.add(new Content(Category.DRAMA, "dramaTitle2", "dramaDesc2", "dramaUrl2"));
+        contents.add(new Content(Category.K_POP, "kpopTitle1", "kpopDesc1", "kpopUrl1"));
+        contents.add(new Content(Category.K_POP, "kpopTitle2", "kpopDesc2", "kpopUrl2"));
+        contents.add(new Content(Category.MOVIE, "movieTitle1", "movieDesc1", "movieUrl1"));
+        contents.add(new Content(Category.MOVIE, "movieTitle2", "movieDesc2", "movieUrl2"));
+        contents.add(new Content(Category.NOVEL, "novelTitle1", "novelDesc1", "novelUrl1"));
+        contents.add(new Content(Category.NOVEL, "novelTitle2", "novelDesc2", "novelUrl2"));
 
         contentRepository.saveAll(contents);
 
