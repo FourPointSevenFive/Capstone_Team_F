@@ -1,4 +1,4 @@
-import Image from 'next/image';
+import Image from "next/image";
 
 export default function Stamp({
   title,
@@ -8,12 +8,16 @@ export default function Stamp({
   date: string;
 }) {
   return (
-    <div className="flex flex-col border-2 rounded-[20px] shadow-md w-48 h-48">
-      <div className="flex justify-center pt-5">
-        <Image src={"/icons/stamp.png"} alt='stampImage' width={80} height={80}>{}</Image>
+    <div className="w-25 flex h-fit flex-col rounded-[10px] border-2 shadow-md">
+      <div className="flex justify-center pt-2">
+        <Image src={"/icons/stamp.png"} alt="stampImage" width={50} height={50}>
+          {}
+        </Image>
       </div>
-      <div className="flex justify-center pt-3 text-gray-600">{title}</div>
-      <div className="flex justify-center pb-3 text-sm text-gray-600">{date}</div>
+      <div className="flex justify-center pt-1 text-gray-600">{title}</div>
+      <div className="flex justify-center pb-3 text-sm text-gray-600">
+        {date}
+      </div>
     </div>
   );
 }
