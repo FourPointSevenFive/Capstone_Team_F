@@ -34,4 +34,9 @@ public class ContentService {
 
         return result;
     }
+
+    public List<ContentResponseDto> getContentsByCategory(String category) {
+        List<Content> contents = contentRepository.findByCategory(Category.valueOf(category));
+        return contents.stream().map(ContentResponseDto::toDto).toList();
+    }
 }
