@@ -1,4 +1,5 @@
 import Header from "../_components/Header";
+import MapContainer from "../_components/Map";
 import LocationCard from "../map/_components/LocationCard";
 import Stamp from "./_components/Stamp";
 
@@ -8,9 +9,7 @@ export default function Page() {
       <div className="flex justify-between">
         <Header />
       </div>
-      <div className="mb-10 h-96 w-full rounded-[12px] bg-neutral-200 p-4">
-        map
-      </div>
+      <MapContainer />
       <div className="flex flex-col gap-20">
         <MyList />
         <MyProofShot />
