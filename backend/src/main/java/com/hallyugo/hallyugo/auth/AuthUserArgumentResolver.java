@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.MethodParameter;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
@@ -21,10 +22,7 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 @Slf4j
 public class AuthUserArgumentResolver implements HandlerMethodArgumentResolver {
 
-    public static final String AUTHORIZATION_HEADER = "Authorization";
-    public static final String BEARER_PREFIX = "Bearer";
     private final UserRepository userRepository;
-    private final JwtProvider jwtProvider;
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
@@ -42,19 +40,14 @@ public class AuthUserArgumentResolver implements HandlerMethodArgumentResolver {
             WebDataBinderFactory binderFactory
     ) {
 
-        String authorizationHeader = webRequest.getHeader(AUTHORIZATION_HEADER);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        if(authorizationHeader != null && authorizationHeader.startsWith(BEARER_PREFIX)) {
-            String token = authorizationHeader.substring(7);
+        if (authentication != null && authentication.isAuthenticated()) {
+            Long userId = Long.parseLong(authentication.getName());
+            log.info("userId = {}", userId);
 
-            if(jwtProvider.validateToken(token)) {
-                Authentication authentication = jwtProvider.getAuthentication(token);
-                Long userId = Long.parseLong(authentication.getName());
-                log.info("userId = {}", userId);
-
-                return userRepository.findById(userId)
-                        .orElseThrow(() -> new LoginException(ExceptionCode.NOT_FOUND_USERID));
-            }
+            return userRepository.findById(userId)
+                    .orElseThrow(() -> new LoginException(ExceptionCode.NOT_FOUND_USERID));
         }
 
         throw new InvalidJwtException(ExceptionCode.INVALID_TOKEN);
