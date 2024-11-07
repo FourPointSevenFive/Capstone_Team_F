@@ -14,6 +14,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -79,5 +80,29 @@ class ContentServiceTest {
 
         // then
         Assertions.assertThat(fetchedContents).hasSize(TOTAL_CONTENTS_SIZE_PER_CATEGORY);
+    }
+
+    @DisplayName("제목에 키워드가 포함된 전체 콘텐츠를 조회할 수 있어야 한다.")
+    @ParameterizedTest
+    @ValueSource(strings = {"Kpop", "KPOP", "kpop"})
+    void 키워드_검색_성공_테스트(String keyword) {
+        // when
+        List<ContentResponseDto> fetchedContents = contentService.getContentsByKeyword(keyword);
+
+        // then
+        Assertions.assertThat(fetchedContents).hasSize(TOTAL_CONTENTS_SIZE_PER_CATEGORY);
+    }
+
+    @DisplayName("제목에 키워드가 포함된 콘텐츠가 없는 경우 빈 리스트가 반환되어야 한다.")
+    @Test
+    void 키워드_검색_실패_테스트() {
+        // given
+        String nonMatchingKeyword = "nonMatchingKeyword";
+
+        // when
+        List<ContentResponseDto> fetchedContents = contentService.getContentsByKeyword(nonMatchingKeyword);
+
+        // then
+        Assertions.assertThat(fetchedContents).isEmpty();
     }
 }
