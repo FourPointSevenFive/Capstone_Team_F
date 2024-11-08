@@ -111,12 +111,14 @@ public class JwtProvider {
             return true;
         } catch (SecurityException | MalformedJwtException e) {
             log.info("{}", ExceptionCode.INVALID_TOKEN);
+            throw new InvalidJwtException(ExceptionCode.INVALID_TOKEN);
         } catch (ExpiredJwtException | IllegalArgumentException e) {
             log.info("{}", ExceptionCode.EXPIRED_TOKEN);
+            throw new InvalidJwtException(ExceptionCode.EXPIRED_TOKEN);
         } catch (UnsupportedJwtException e) {
             log.info("{}", ExceptionCode.UNSUPPORTED_TOKEN);
+            throw new InvalidJwtException(ExceptionCode.UNSUPPORTED_TOKEN);
         }
-        return false;
     }
 
     // accessToken
