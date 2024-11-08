@@ -1,5 +1,9 @@
 package com.hallyugo.hallyugo.auth;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.hallyugo.hallyugo.common.exception.ExceptionCode;
+import com.hallyugo.hallyugo.common.exception.ExceptionResponse;
+import com.hallyugo.hallyugo.common.exception.InvalidJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -24,9 +28,19 @@ public class JwtFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String jwt = resolveToken(request);
 
-        if(StringUtils.hasText(jwt) && jwtProvider.validateToken(jwt)) {
-            Authentication authentication = jwtProvider.getAuthentication(jwt);
-            SecurityContextHolder.getContext().setAuthentication(authentication);
+        if (StringUtils.hasText(jwt)) {
+            try {
+                if (jwtProvider.validateToken(jwt)) {
+                    Authentication authentication = jwtProvider.getAuthentication(jwt);
+                    SecurityContextHolder.getContext().setAuthentication(authentication);
+                }
+            } catch (InvalidJwtException e) {
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                response.setContentType("application/json;charset=UTF-8");
+                ExceptionResponse exceptionResponse = new ExceptionResponse(e.getCode(), e.getMessage());
+                response.getWriter().write(new ObjectMapper().writeValueAsString(exceptionResponse));
+                return;
+            }
         }
 
         filterChain.doFilter(request, response);
