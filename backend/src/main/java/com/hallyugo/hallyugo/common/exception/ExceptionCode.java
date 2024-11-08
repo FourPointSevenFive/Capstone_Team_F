@@ -24,7 +24,10 @@ public enum ExceptionCode {
     EXPIRED_TOKEN(3003, "Expired JWT token"),
     UNSUPPORTED_TOKEN(3004, "Unsupported JWT token"),
     EMPTY_CLAIMS(3005, "JWT claims string is empty"),
-    AUTHENTICATION_NOT_FOUND(3006, "Authentication information is missing in the Security Context.");
+    AUTHENTICATION_NOT_FOUND(3006, "Authentication information is missing in the Security Context."),
+
+    // Entity
+    ENTITY_NOT_FOUND(4001, "No results found");
 
     private final int code;
     private final String message;
