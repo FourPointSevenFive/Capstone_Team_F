@@ -43,21 +43,7 @@ class ContentServiceTest {
 
     @BeforeEach
     void setUp() {
-        List<Content> contents = new ArrayList<>();
-        contents.add(new Content(Category.DRAMA, "dramaTitle1", "dramaDesc1", "dramaUrl1"));
-        contents.add(new Content(Category.DRAMA, "dramaTitle2", "dramaDesc2", "dramaUrl2"));
-        contents.add(new Content(Category.DRAMA, "dramaTitle3", "dramaDesc3", "dramaUrl3"));
-        contents.add(new Content(Category.K_POP, "kpopTitle1", "kpopDesc1", "kpopUrl1"));
-        contents.add(new Content(Category.K_POP, "kpopTitle2", "kpopDesc2", "kpopUrl2"));
-        contents.add(new Content(Category.K_POP, "kpopTitle3", "kpopDesc3", "kpopUrl3"));
-        contents.add(new Content(Category.MOVIE, "movieTitle1", "movieDesc1", "movieUrl1"));
-        contents.add(new Content(Category.MOVIE, "movieTitle2", "movieDesc2", "movieUrl2"));
-        contents.add(new Content(Category.MOVIE, "movieTitle3", "movieDesc3", "movieUrl3"));
-        contents.add(new Content(Category.NOVEL, "novelTitle1", "novelDesc1", "novelUrl1"));
-        contents.add(new Content(Category.NOVEL, "novelTitle2", "novelDesc2", "novelUrl2"));
-        contents.add(new Content(Category.NOVEL, "novelTitle3", "novelDesc3", "novelUrl3"));
-
-        contentRepository.saveAll(contents);
+        contentRepository.saveAll(createContents());
     }
 
     @DisplayName("각 카테고리마다 2개씩 총 8개의 랜덤 콘텐츠가 조회되어야 한다.")
@@ -87,7 +73,7 @@ class ContentServiceTest {
 
     @DisplayName("제목에 키워드가 포함된 전체 콘텐츠를 조회할 수 있어야 한다.")
     @ParameterizedTest
-    @ValueSource(strings = {"Kpop", "KPOP", "kpop"})
+    @ValueSource(strings = {"K_pop", "K_POP", "k_pop"})
     void 키워드_검색_성공_테스트(String keyword) {
         // when
         List<ContentResponseDto> fetchedContents = contentService.getContentsByKeyword(keyword);
@@ -104,5 +90,28 @@ class ContentServiceTest {
 
         // when & then
         assertThrows(EntityNotFoundException.class, () -> contentService.getContentsByKeyword(nonMatchingKeyword));
+    }
+
+    private List<Content> createContents() {
+        List<Content> contents = new ArrayList<>();
+
+        for (Category category : Category.values()) {
+            contents.addAll(createContentsByCategory(category));
+        }
+
+        return contents;
+    }
+
+    private List<Content> createContentsByCategory(Category category) {
+        List<Content> contentsByCategory = new ArrayList<>();
+
+        for (int i = 1; i <= TOTAL_CONTENTS_SIZE_PER_CATEGORY; i++) {
+            String title = category.name() + "Title" + i;
+            String description = category.name() + "Desc" + i;
+            String url = category.name() + "Url" + i;
+            contentsByCategory.add(new Content(category, title, description, url));
+        }
+
+        return contentsByCategory;
     }
 }
