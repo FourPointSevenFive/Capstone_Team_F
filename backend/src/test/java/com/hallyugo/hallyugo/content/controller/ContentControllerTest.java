@@ -1,14 +1,11 @@
 package com.hallyugo.hallyugo.content.controller;
 
-import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.hallyugo.hallyugo.auth.AuthUserArgumentResolver;
-import com.hallyugo.hallyugo.common.exception.EntityNotFoundException;
-import com.hallyugo.hallyugo.common.exception.ExceptionCode;
 import com.hallyugo.hallyugo.content.domain.Category;
 import com.hallyugo.hallyugo.content.domain.Content;
 import com.hallyugo.hallyugo.content.domain.ContentResponseDto;
@@ -114,13 +111,14 @@ class ContentControllerTest {
                 .andDo(print());
     }
 
-    @DisplayName("제목에 키워드가 포함된 콘텐츠가 없는 경우 EntityNotFoundException이 발생해야 한다.")
+    @DisplayName("제목에 키워드가 포함된 콘텐츠가 없는 경우 정상 결과가 반환되어야 한다.")
     @Test
-    void 키워드_검색_실패_테스트() throws Exception {
+    void 키워드_검색_결과_없음_테스트() throws Exception {
         // given
+        int size = 0;
+        List<ContentResponseDto> result = Collections.emptyList();
         String nonMatchingKeyword = "nonMatchingKeyword";
-        given(contentService.getContentsByKeyword(nonMatchingKeyword)).willThrow(
-                new EntityNotFoundException(ExceptionCode.ENTITY_NOT_FOUND));
+        when(contentService.getContentsByKeyword(nonMatchingKeyword)).thenReturn(result);
 
         // when
         ResultActions resultActions = mockMvc.perform(
@@ -128,9 +126,9 @@ class ContentControllerTest {
                         .contentType(MediaType.APPLICATION_JSON));
 
         // then
-        resultActions.andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.code").value(ExceptionCode.ENTITY_NOT_FOUND.getCode()))
-                .andExpect(jsonPath("$.message").value(ExceptionCode.ENTITY_NOT_FOUND.getMessage()));
+        resultActions.andExpect(status().isOk())
+                .andExpect(jsonPath("$.size()").value(size))
+                .andDo(print());
     }
 
     private Map<String, List<ContentResponseDto>> generateRandomMockContentsByCategory() {
