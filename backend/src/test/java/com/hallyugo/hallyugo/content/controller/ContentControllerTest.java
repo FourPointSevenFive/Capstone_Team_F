@@ -6,6 +6,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.hallyugo.hallyugo.auth.AuthUserArgumentResolver;
 import com.hallyugo.hallyugo.common.exception.EntityNotFoundException;
 import com.hallyugo.hallyugo.common.exception.ExceptionCode;
 import com.hallyugo.hallyugo.content.domain.Category;
@@ -33,7 +34,6 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 @WithMockUser("user") // to avoid 401 error
-@MockBean(JpaMetamodelMappingContext.class)
 @WebMvcTest(controllers = ContentController.class)
 class ContentControllerTest {
     private static final String BASE_URL = "/api/v1/content";
@@ -45,6 +45,12 @@ class ContentControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
+
+    @MockBean
+    private JpaMetamodelMappingContext jpaMetamodelMappingContext;
+
+    @MockBean
+    private AuthUserArgumentResolver authUserArgumentResolver;
 
     @MockBean
     private ContentService contentService;
