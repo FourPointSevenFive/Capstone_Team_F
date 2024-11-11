@@ -1,2 +1,2 @@
 alter table content
-add column hashtag TEXT;
+add column hashtag text;
