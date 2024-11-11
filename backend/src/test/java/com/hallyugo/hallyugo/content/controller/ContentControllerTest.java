@@ -95,40 +95,26 @@ class ContentControllerTest {
     @Test
     void 키워드_검색_성공_테스트() throws Exception {
         // given
-        int size = 5;
-        String keyword = "matchingKeyword";
+        final int size = 5;
+        final String keyword = "matchingKeyword";
         List<ContentResponseDto> result = generateMockContentsContainingKeyword(keyword, size);
         when(contentService.getContentsByKeyword(keyword)).thenReturn(result);
 
-        // when
-        ResultActions resultActions = mockMvc.perform(
-                MockMvcRequestBuilders.get(BASE_URL + "?" + KEYWORD_QUERY_STRING + keyword)
-                        .contentType(MediaType.APPLICATION_JSON));
-
-        // then
-        resultActions.andExpect(status().isOk())
-                .andExpect(jsonPath("$.size()").value(size))
-                .andDo(print());
+        // when & then
+        performGetRequestWithKeywordAndCheckResponse(keyword, size);
     }
 
     @DisplayName("제목에 키워드가 포함된 콘텐츠가 없는 경우 정상 결과가 반환되어야 한다.")
     @Test
     void 키워드_검색_결과_없음_테스트() throws Exception {
         // given
-        int size = 0;
+        final int size = 0;
+        final String nonMatchingKeyword = "nonMatchingKeyword";
         List<ContentResponseDto> result = Collections.emptyList();
-        String nonMatchingKeyword = "nonMatchingKeyword";
         when(contentService.getContentsByKeyword(nonMatchingKeyword)).thenReturn(result);
 
-        // when
-        ResultActions resultActions = mockMvc.perform(
-                MockMvcRequestBuilders.get(BASE_URL + "?" + KEYWORD_QUERY_STRING + nonMatchingKeyword)
-                        .contentType(MediaType.APPLICATION_JSON));
-
-        // then
-        resultActions.andExpect(status().isOk())
-                .andExpect(jsonPath("$.size()").value(size))
-                .andDo(print());
+        // when & then
+        performGetRequestWithKeywordAndCheckResponse(nonMatchingKeyword, size);
     }
 
     private Map<String, List<ContentResponseDto>> generateRandomMockContentsByCategory() {
@@ -184,5 +170,15 @@ class ContentControllerTest {
         }
 
         return contents.stream().map(ContentResponseDto::toDto).toList();
+    }
+
+    private void performGetRequestWithKeywordAndCheckResponse(String keyword, int expectedSize) throws Exception {
+        ResultActions resultActions = mockMvc.perform(
+                MockMvcRequestBuilders.get(BASE_URL + "?" + KEYWORD_QUERY_STRING + keyword)
+                        .contentType(MediaType.APPLICATION_JSON));
+
+        resultActions.andExpect(status().isOk())
+                .andExpect(jsonPath("$.size()").value(expectedSize))
+                .andDo(print());
     }
 }
