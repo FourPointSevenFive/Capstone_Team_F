@@ -38,10 +38,8 @@ public class Content {
     @Enumerated(EnumType.STRING)
     private Category category;
 
-    @Column()
     private String title;
 
-    @Column()
     private String description;
 
     @Column(name = "content_image_url")
