@@ -133,15 +133,16 @@ class ContentControllerTest {
         List<Content> kpopContents = new ArrayList<>();
         List<Content> movieContents = new ArrayList<>();
         List<Content> novelContents = new ArrayList<>();
+        final String hashtag = "#hashtag";
 
-        dramaContents.add(new Content(Category.DRAMA, "dramaTitle1", "dramaDesc1", "dramaUrl1"));
-        dramaContents.add(new Content(Category.DRAMA, "dramaTitle2", "dramaDesc2", "dramaUrl2"));
-        kpopContents.add(new Content(Category.K_POP, "kpopTitle1", "kpopDesc1", "kpopUrl1"));
-        kpopContents.add(new Content(Category.K_POP, "kpopTitle2", "kpopDesc2", "kpopUrl2"));
-        movieContents.add(new Content(Category.MOVIE, "movieTitle1", "movieDesc1", "movieUrl1"));
-        movieContents.add(new Content(Category.MOVIE, "movieTitle2", "movieDesc2", "movieUrl2"));
-        novelContents.add(new Content(Category.NOVEL, "novelTitle1", "novelDesc1", "novelUrl1"));
-        novelContents.add(new Content(Category.NOVEL, "novelTitle2", "novelDesc2", "novelUrl2"));
+        dramaContents.add(new Content(Category.DRAMA, "dramaTitle1", "dramaDesc1", "dramaUrl1", hashtag));
+        dramaContents.add(new Content(Category.DRAMA, "dramaTitle2", "dramaDesc2", "dramaUrl2", hashtag));
+        kpopContents.add(new Content(Category.K_POP, "kpopTitle1", "kpopDesc1", "kpopUrl1", hashtag));
+        kpopContents.add(new Content(Category.K_POP, "kpopTitle2", "kpopDesc2", "kpopUrl2", hashtag));
+        movieContents.add(new Content(Category.MOVIE, "movieTitle1", "movieDesc1", "movieUrl1", hashtag));
+        movieContents.add(new Content(Category.MOVIE, "movieTitle2", "movieDesc2", "movieUrl2", hashtag));
+        novelContents.add(new Content(Category.NOVEL, "novelTitle1", "novelDesc1", "novelUrl1", hashtag));
+        novelContents.add(new Content(Category.NOVEL, "novelTitle2", "novelDesc2", "novelUrl2", hashtag));
 
         List<ContentResponseDto> dramaContentDtos = dramaContents.stream().map(ContentResponseDto::toDto).toList();
         List<ContentResponseDto> kpopContentDtos = kpopContents.stream().map(ContentResponseDto::toDto).toList();
@@ -161,7 +162,7 @@ class ContentControllerTest {
 
         for (int i = 0; i < TOTAL_CONTENTS_SIZE_PER_CATEGORY; i++) {
             contents.add(new Content(category, category.name() + "Title" + i, category.name() + "Desc" + i,
-                    category.name() + "Url" + i));
+                    category.name() + "Url" + i, "#" + category.name() + i));
 
         }
 
@@ -175,7 +176,7 @@ class ContentControllerTest {
         for (int i = 0; i < size; i++) {
             Collections.shuffle(categories);
             contents.add(new Content(categories.getFirst(), keyword + i, "desc" + i,
-                    "url" + i));
+                    "url" + i, "#hashtag" + i));
         }
 
         return contents.stream().map(ContentResponseDto::toDto).toList();
