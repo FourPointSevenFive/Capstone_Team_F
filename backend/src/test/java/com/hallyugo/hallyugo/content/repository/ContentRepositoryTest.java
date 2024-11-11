@@ -96,7 +96,8 @@ class ContentRepositoryTest {
             String title = category.name() + "Title" + i;
             String description = category.name() + "Desc" + i;
             String url = category.name() + "Url" + i;
-            contentsByCategory.add(new Content(category, title, description, url));
+            String hashtag = "#" + category.name() + i;
+            contentsByCategory.add(new Content(category, title, description, url, hashtag));
         }
 
         return contentsByCategory;
