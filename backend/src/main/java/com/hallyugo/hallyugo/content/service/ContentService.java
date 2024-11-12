@@ -1,7 +1,5 @@
 package com.hallyugo.hallyugo.content.service;
 
-import com.hallyugo.hallyugo.common.exception.EntityNotFoundException;
-import com.hallyugo.hallyugo.common.exception.ExceptionCode;
 import com.hallyugo.hallyugo.content.domain.Category;
 import com.hallyugo.hallyugo.content.domain.Content;
 import com.hallyugo.hallyugo.content.domain.ContentResponseDto;
@@ -35,31 +33,16 @@ public class ContentService {
 
     private List<ContentResponseDto> getRandomContentsByCategory(Category category, Pageable pageable) {
         List<Content> contents = contentRepository.findRandomContentsByCategory(category, pageable);
-
-        if (contents.isEmpty()) {
-            throw new EntityNotFoundException(ExceptionCode.ENTITY_NOT_FOUND);
-        }
-
         return contents.stream().map(ContentResponseDto::toDto).toList();
     }
 
     public List<ContentResponseDto> getContentsByCategory(String category) {
         List<Content> contents = contentRepository.findByCategory(Category.valueOf(category));
-
-        if (contents.isEmpty()) {
-            throw new EntityNotFoundException(ExceptionCode.ENTITY_NOT_FOUND);
-        }
-
         return contents.stream().map(ContentResponseDto::toDto).toList();
     }
 
     public List<ContentResponseDto> getContentsByKeyword(String keyword) {
         List<Content> contents = contentRepository.findByTitleContainingIgnoreCase(keyword);
-
-        if (contents.isEmpty()) {
-            throw new EntityNotFoundException(ExceptionCode.ENTITY_NOT_FOUND);
-        }
-
         return contents.stream().map(ContentResponseDto::toDto).toList();
     }
 }

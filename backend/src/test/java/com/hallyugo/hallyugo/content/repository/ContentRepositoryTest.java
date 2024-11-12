@@ -1,10 +1,11 @@
 package com.hallyugo.hallyugo.content.repository;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import com.hallyugo.hallyugo.content.domain.Category;
 import com.hallyugo.hallyugo.content.domain.Content;
 import java.util.ArrayList;
 import java.util.List;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -40,7 +41,7 @@ class ContentRepositoryTest {
                 PageRequest.of(PAGE_NUMBER, INITIAL_CONTENTS_SIZE_PER_CATEGORY));
 
         // then
-        Assertions.assertThat(fetchedContents).hasSize(INITIAL_CONTENTS_SIZE_PER_CATEGORY)
+        assertThat(fetchedContents).hasSize(INITIAL_CONTENTS_SIZE_PER_CATEGORY)
                 .extracting("category").containsExactly(category, category);
     }
 
@@ -52,7 +53,7 @@ class ContentRepositoryTest {
         List<Content> fetchedContents = contentRepository.findByCategory(category);
 
         // then
-        Assertions.assertThat(fetchedContents).hasSize(TOTAL_CONTENTS_SIZE_PER_CATEGORY);
+        assertThat(fetchedContents).hasSize(TOTAL_CONTENTS_SIZE_PER_CATEGORY);
     }
 
     @DisplayName("제목에 키워드가 포함된 전체 콘텐츠를 조회할 수 있어야 한다.")
@@ -63,12 +64,12 @@ class ContentRepositoryTest {
         List<Content> fetchedContents = contentRepository.findByTitleContainingIgnoreCase(keyword);
 
         // then
-        Assertions.assertThat(fetchedContents).hasSize(TOTAL_CONTENTS_SIZE_PER_CATEGORY);
+        assertThat(fetchedContents).hasSize(TOTAL_CONTENTS_SIZE_PER_CATEGORY);
     }
 
     @DisplayName("제목에 키워드가 포함된 콘텐츠가 없는 경우 빈 리스트가 반환되어야 한다.")
     @Test
-    void 키워드_검색_실패_테스트() {
+    void 키워드_검색_결과_없음_테스트() {
         // given
         String nonMatchingKeyword = "nonMatchingKeyword";
 
@@ -76,7 +77,7 @@ class ContentRepositoryTest {
         List<Content> fetchedContents = contentRepository.findByTitleContainingIgnoreCase(nonMatchingKeyword);
 
         // then
-        Assertions.assertThat(fetchedContents).isEmpty();
+        assertThat(fetchedContents).isEmpty();
     }
 
     private List<Content> createContents() {
@@ -96,7 +97,8 @@ class ContentRepositoryTest {
             String title = category.name() + "Title" + i;
             String description = category.name() + "Desc" + i;
             String url = category.name() + "Url" + i;
-            contentsByCategory.add(new Content(category, title, description, url));
+            String hashtag = "#" + category.name() + i;
+            contentsByCategory.add(new Content(category, title, description, url, hashtag));
         }
 
         return contentsByCategory;

@@ -38,14 +38,14 @@ public class Content {
     @Enumerated(EnumType.STRING)
     private Category category;
 
-    @Column()
     private String title;
 
-    @Column()
     private String description;
 
     @Column(name = "content_image_url")
     private String contentImageUrl;
+
+    private String hashtag;
 
     @Column(name = "created_at")
     @CreatedDate
@@ -58,10 +58,11 @@ public class Content {
     @OneToMany(mappedBy = "content", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Location> locations = new ArrayList<>();
 
-    public Content(Category category, String title, String description, String contentImageUrl) {
+    public Content(Category category, String title, String description, String contentImageUrl, String hashtag) {
         this.category = category;
         this.title = title;
         this.description = description;
         this.contentImageUrl = contentImageUrl;
+        this.hashtag = hashtag;
     }
 }

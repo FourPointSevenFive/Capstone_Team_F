@@ -19,12 +19,16 @@ public class ContentResponseDto {
     @JsonProperty("content_image_url")
     private String contentImageUrl;
 
+    @JsonProperty
+    private String hashtag;
+
     private ContentResponseDto(Content content) {
         this.id = content.getId();
         this.category = content.getCategory();
         this.title = content.getTitle();
         this.description = content.getDescription();
         this.contentImageUrl = content.getContentImageUrl();
+        this.hashtag = content.getHashtag();
     }
 
     public static ContentResponseDto toDto(Content content) {
