@@ -22,15 +22,7 @@ public class StampService {
         List<Stamp> limitedStamps = stamps.size() > limit ? stamps.subList(0, limit) : stamps;
 
         List<StampResponseItem> stampResponseItems = limitedStamps.stream()
-                .map(stamp -> {
-                    StampResponseItem item = new StampResponseItem();
-                    item.setId(stamp.getId());
-                    item.setLocationId(stamp.getLocation().getId());
-                    item.setCategory(stamp.getLocation().getContent().getCategory());
-                    item.setTitle(stamp.getLocation().getTitle());
-                    item.setCreatedAt(stamp.getCreatedAt());
-                    return item;
-                })
+                .map(StampResponseItem::toDto)
                 .toList();
 
         StampResponseDto result = new StampResponseDto();
