@@ -2,6 +2,8 @@ import Header from "../_components/Header";
 import MapContainer from "../_components/Map";
 import LocationCard from "../map/_components/LocationCard";
 import Stamp from "./_components/Stamp";
+import CustomBadge from "../_components/CustomBadge";
+import PieChart from "./_components/PieChart";
 
 export default function Page() {
   return (
@@ -23,8 +25,10 @@ export default function Page() {
 const MyList = () => {
   const total = 91; // TODO: fetch from API
   return (
-    <div>
-      <Title title="MY LIST" total={total} />
+    <div className="pt-4">
+      <div className="pl-1 pr-1">
+        <Title title="My List" total={total}/>
+      </div>
       <div className="flex flex-col gap-3">
         <LocationCard
           title="Bongsuyuk"
@@ -44,32 +48,29 @@ const MyList = () => {
 };
 
 const MyProofShot = () => {
+  const total = 21
   return (
-    <div className="pl-1 pr-1">
-      <Title title="PROOF SHOTS" />
-      <div className="grid grid-cols-3 gap-2">
-        <div>pic</div>
-        <div>pic</div>
-        <div>pic</div>
-        <div>pic</div>
-        <div>pic</div>
-        <div>pic</div>
-        <div>pic</div>
-        <div>pic</div>
-        <div>pic</div>
-        <div>pic</div>
+    <div className="flex w-full flex-col gap-5 pr-1 pl-1">
+      <Title title="My ProofShots" total={total} />
+      <div className="grid grid-cols-3 gap-1">
+        {Array.from({ length: 10 }).map((_, index) => (
+          <div
+            key={index}
+            className="pl-1 pr-1 flex aspect-square items-center justify-center bg-neutral-200">
+            photo {index + 1}
+          </div>
+        ))}
       </div>
     </div>
   );
-};
+}
 
 const MyStamps = () => {
   const total = 10; //  TODO: fetch from API
   return (
     <div>
-      <Title title="MY STAMPS" total={total} />
-
-      <div className="mx-auto grid max-w-xl grid-cols-3 gap-x-2 gap-y-3">
+      <Title title="My Stamps" total={total} />
+      <div className="mx-auto grid max-w-xl aspect-square grid-cols-3 gap-x-3 gap-y-3">
         <Stamp title="Bongsuyuk" date="July 7, 2023" />
         <Stamp title="SKKU" date="July 7, 2023" />
         <Stamp title="Busan" date="July 7, 2023" />
@@ -88,12 +89,10 @@ const MyStamps = () => {
 
 const MyStats = () => {
   return (
-    <div className="flex flex-col">
-      <Title title="MY STATS" />
-      <div className="flex justify-center">title badge</div>
-      <div className="flex justify-end">
-        <div>circle graph</div>
-        <div>total, category count</div>
+    <div className="flex flex-col gap-2">
+      <Title title="My Stats" />
+      <div className="flex flex-col justify-center items-center pt-3">
+        <PieChart data={[50, 40, 30, 10]} labels={["kpop", "drama", "movie", "novel"]} />
       </div>
     </div>
   );
@@ -101,8 +100,8 @@ const MyStats = () => {
 
 const Title = ({ title, total }: { title: string; total?: number }) => {
   return (
-    <div className="mb-10 flex justify-between">
-      <p className="text-lg font-bold">{title}</p>
+    <div className="mb-5 flex justify-between">
+      <p className="text-xl font-bold">{title}</p>
       {total && (
         <div className="flex gap-2 self-end">
           <p className="font-semibold">TOTAL </p>

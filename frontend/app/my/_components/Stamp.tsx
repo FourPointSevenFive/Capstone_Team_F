@@ -15,9 +15,7 @@ export default function Stamp({
         </Image>
       </div>
       <div className="flex justify-center pt-1 text-gray-600">{title}</div>
-      <div className="flex justify-center pb-3 text-sm text-gray-600">
-        {date}
-      </div>
+      <div className="flex justify-center pb-3 text-sm text-gray-600">{date}</div>
     </div>
   );
 }
