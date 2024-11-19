@@ -43,4 +43,4 @@ out/
 
 ### application.properties ###
 src/main/resources/application.properties
-
+src/test/resources/application-test.properties

@@ -19,7 +19,6 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.ColumnDefault;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -39,33 +38,31 @@ public class Content {
     @Enumerated(EnumType.STRING)
     private Category category;
 
-    @Column()
     private String title;
 
-    @Column()
     private String description;
 
     @Column(name = "content_image_url")
     private String contentImageUrl;
 
-    @Column(name = "favorite_cnt")
-    @ColumnDefault("0")
-    private Long favoriteCount;
+    private String hashtag;
 
+    @Column(name = "created_at")
     @CreatedDate
     private LocalDateTime createdAt;
 
+    @Column(name = "updated_at")
     @LastModifiedDate
     private LocalDateTime updatedAt;
 
     @OneToMany(mappedBy = "content", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Location> locations = new ArrayList<>();
 
-    public Content(Category category, String title, String description, String contentImageUrl, Long favoriteCount) {
+    public Content(Category category, String title, String description, String contentImageUrl, String hashtag) {
         this.category = category;
         this.title = title;
         this.description = description;
         this.contentImageUrl = contentImageUrl;
-        this.favoriteCount = favoriteCount;
+        this.hashtag = hashtag;
     }
 }

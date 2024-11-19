@@ -13,7 +13,7 @@ export default function Home() {
       </div>
 
       <main className="flex flex-col gap-16">
-        <ContentsBox title="K - Pop" />
+        <ContentsBox title="K-Pop" />
         <ContentsBox title="Drama" />
         <ContentsBox title="Movie" />
         <ContentsBox title="Novel" />

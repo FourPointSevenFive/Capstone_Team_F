@@ -1,0 +1,12 @@
+spring:
+  datasource:
+    url: ${spring.datasource.url}
+    driver_class_name: org.h2.Driver
+    username: ${spring.datasource.username}
+    password: ${spring.datasource.password}
+  flyway:
+    enabled: ${spring.flyway.enabled}
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: create-drop
