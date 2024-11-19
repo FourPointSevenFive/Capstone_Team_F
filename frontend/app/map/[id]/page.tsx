@@ -54,8 +54,7 @@ function ProofShoots() {
         {Array.from({ length: 10 }).map((_, index) => (
           <div
             key={index}
-            className="flex aspect-square items-center justify-center bg-neutral-200"
-          >
+            className="flex aspect-square items-center justify-center bg-neutral-200">
             photo {index + 1}
           </div>
         ))}
