@@ -53,6 +53,9 @@ dependencies {
     // h2 for test
     testImplementation group: 'com.h2database', name: 'h2', version: '2.2.224'
     testRuntimeOnly 'com.h2database:h2'
+
+    // AWS
+    implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
 }
 
 tasks.named('test') {
