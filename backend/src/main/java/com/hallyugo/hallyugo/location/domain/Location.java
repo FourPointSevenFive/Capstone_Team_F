@@ -1,8 +1,6 @@
 package com.hallyugo.hallyugo.location.domain;
 
 import com.hallyugo.hallyugo.content.domain.Content;
-import com.hallyugo.hallyugo.image.domain.Image;
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
@@ -12,12 +10,9 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -35,7 +30,8 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @Entity
 public class Location {
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -83,5 +79,9 @@ public class Location {
 
         this.content = content;
         content.getLocations().add(this);
+    }
+
+    public void increaseFavoriteCount() {
+        this.favoriteCount++;
     }
 }
