@@ -79,4 +79,19 @@ public class FavoriteService {
             favoriteRepository.save(favorite);
         }
     }
+
+    @Transactional
+    public void decreaseFavoriteCountAndDelete(User user, Long locationId) {
+        // 전달된 locationId를 이용해 Location 객체 조회
+        Location location = locationRepository.findById(locationId)
+                .orElseThrow(() -> new EntityNotFoundException(ExceptionCode.ENTITY_NOT_FOUND));
+
+        if (favoriteRepository.existsByUserIdAndLocationId(user.getId(), locationId)) {
+            // 해당 객체의 favoriteCount 1 감소
+            location.decreaseFavoriteCount();
+
+            // Favorite 객체 삭제
+            favoriteRepository.deleteByUserIdAndLocationId(user.getId(), locationId);
+        }
+    }
 }
