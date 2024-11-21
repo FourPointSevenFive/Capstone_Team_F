@@ -11,10 +11,10 @@ import com.hallyugo.hallyugo.image.repository.ImageRepository;
 import com.hallyugo.hallyugo.location.domain.Location;
 import com.hallyugo.hallyugo.location.repository.LocationRepository;
 import com.hallyugo.hallyugo.user.domain.User;
+import jakarta.transaction.Transactional;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -62,5 +62,21 @@ public class FavoriteService {
             item.setImage(null);
         }
         return item;
+    }
+
+    @Transactional
+    public void increaseFavoriteCountAndSave(User user, Long locationId) {
+        // 전달된 locationId를 이용해 Location 객체 조회
+        Location location = locationRepository.findById(locationId)
+                .orElseThrow(() -> new EntityNotFoundException(ExceptionCode.ENTITY_NOT_FOUND));
+
+        if (!favoriteRepository.existsByUserIdAndLocationId(user.getId(), locationId)) {
+            // 해당 객체의 favoriteCount 1 증가
+            location.increaseFavoriteCount();
+
+            // Favorite 객체 생성 후 저장
+            Favorite favorite = new Favorite(user, location);
+            favoriteRepository.save(favorite);
+        }
     }
 }
