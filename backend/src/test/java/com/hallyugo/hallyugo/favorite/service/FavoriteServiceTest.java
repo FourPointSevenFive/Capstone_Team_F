@@ -1,9 +1,16 @@
 package com.hallyugo.hallyugo.favorite.service;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import com.hallyugo.hallyugo.favorite.domain.response.FavoriteResponseDto;
 import com.hallyugo.hallyugo.favorite.domain.response.FavoriteResponseItem;
+import com.hallyugo.hallyugo.location.domain.Location;
+import com.hallyugo.hallyugo.location.repository.LocationRepository;
 import com.hallyugo.hallyugo.user.domain.User;
 import com.hallyugo.hallyugo.user.repository.UserRepository;
+import java.util.List;
+import java.util.Optional;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,11 +18,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
-
-import static org.assertj.core.api.Assertions.assertThat;
-
-import java.util.List;
-import java.util.Optional;
 
 @Transactional
 @ActiveProfiles("test")
@@ -28,6 +30,9 @@ public class FavoriteServiceTest {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private LocationRepository locationRepository;
 
     @DisplayName("사용자의 즐겨찾기 조회 - 제한 없음")
     @Test
@@ -76,5 +81,43 @@ public class FavoriteServiceTest {
             assertThat(item.getDescription()).isNotEmpty();
             assertThat(item.getImage()).isNotEmpty();
         }
+    }
+
+    @DisplayName("좋아요 버튼이 눌리지 않은 상태에서 버튼을 누르면 좋아요 개수가 1 증가한다.")
+    @Test
+    void 좋아요_버튼_클릭_시_좋아요_개수_1_증가_테스트() {
+        // given
+        Long userId = 1L;
+        Long locationId = 3L;
+        User user = userRepository.findById(userId).get();
+        Location location = locationRepository.findById(locationId).get();
+        Long initialFavoriteCount = location.getFavoriteCount();
+
+        // when
+        favoriteService.increaseFavoriteCountAndSave(user, locationId);
+
+        // then
+        Assertions.assertThat(initialFavoriteCount + 1).isEqualTo(
+                locationRepository.findById(locationId).get().getFavoriteCount()
+        );
+    }
+
+    @DisplayName("좋아요 버튼이 눌린 상태에서 버튼을 누르면 좋아요 개수가 그대로 유지된다.")
+    @Test
+    void 좋아요_버튼_클릭_시_좋아요_개수_유지_테스트() {
+        // given
+        Long userId = 1L;
+        Long locationId = 1L;
+        User user = userRepository.findById(userId).get();
+        Location location = locationRepository.findById(locationId).get();
+        Long initialFavoriteCount = location.getFavoriteCount();
+
+        // when
+        favoriteService.increaseFavoriteCountAndSave(user, locationId);
+
+        // then
+        Assertions.assertThat(initialFavoriteCount).isEqualTo(
+                locationRepository.findById(locationId).get().getFavoriteCount()
+        );
     }
 }
