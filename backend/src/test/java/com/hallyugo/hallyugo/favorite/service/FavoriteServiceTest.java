@@ -120,4 +120,42 @@ public class FavoriteServiceTest {
                 locationRepository.findById(locationId).get().getFavoriteCount()
         );
     }
+
+    @DisplayName("좋아요 버튼이 눌린 상태에서 버튼을 취소하면 좋아요 개수가 1 감소한다.")
+    @Test
+    void 좋아요_버튼_언클릭_시_좋아요_개수_1_감소_테스트() {
+        // given
+        Long userId = 1L;
+        Long locationId = 1L;
+        User user = userRepository.findById(userId).get();
+        Location location = locationRepository.findById(locationId).get();
+        Long initialFavoriteCount = location.getFavoriteCount();
+
+        // when
+        favoriteService.decreaseFavoriteCountAndDelete(user, locationId);
+
+        // then
+        Assertions.assertThat(initialFavoriteCount - 1).isEqualTo(
+                locationRepository.findById(locationId).get().getFavoriteCount()
+        );
+    }
+
+    @DisplayName("좋아요 버튼이 눌리지 않은 상태에서 버튼을 취소하면 좋아요 개수가 그대로 유지된다.")
+    @Test
+    void 좋아요_버튼_언클릭_시_좋아요_개수_유지_테스트() {
+        // given
+        Long userId = 1L;
+        Long locationId = 3L;
+        User user = userRepository.findById(userId).get();
+        Location location = locationRepository.findById(locationId).get();
+        Long initialFavoriteCount = location.getFavoriteCount();
+
+        // when
+        favoriteService.decreaseFavoriteCountAndDelete(user, locationId);
+
+        // then
+        Assertions.assertThat(initialFavoriteCount).isEqualTo(
+                locationRepository.findById(locationId).get().getFavoriteCount()
+        );
+    }
 }
