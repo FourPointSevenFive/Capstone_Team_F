@@ -74,6 +74,9 @@ public class FavoriteService {
             // 해당 객체의 favoriteCount 1 증가
             location.increaseFavoriteCount();
 
+            // favoriteCount가 갱신된 Location 객체 저장
+            locationRepository.save(location);
+
             // Favorite 객체 생성 후 저장
             Favorite favorite = new Favorite(user, location);
             favoriteRepository.save(favorite);
@@ -89,6 +92,9 @@ public class FavoriteService {
         if (favoriteRepository.existsByUserIdAndLocationId(user.getId(), locationId)) {
             // 해당 객체의 favoriteCount 1 감소
             location.decreaseFavoriteCount();
+
+            // favoriteCount가 갱신된 Location 객체 저장
+            locationRepository.save(location);
 
             // Favorite 객체 삭제
             favoriteRepository.deleteByUserIdAndLocationId(user.getId(), locationId);
