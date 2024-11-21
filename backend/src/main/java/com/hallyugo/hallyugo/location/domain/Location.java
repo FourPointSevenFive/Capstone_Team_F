@@ -65,9 +65,6 @@ public class Location {
     @LastModifiedDate
     private LocalDateTime updatedAt;
 
-    @OneToMany(mappedBy = "location", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Image> images = new ArrayList<>();
-
     public Location(String title, BigDecimal latitude, BigDecimal longitude, String description,
                     String videoLink, Long favoriteCount, String pose) {
         this.title = title;

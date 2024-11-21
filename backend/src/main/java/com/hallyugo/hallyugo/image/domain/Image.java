@@ -48,13 +48,4 @@ public class Image {
         this.imageUrl = imageUrl;
         this.description = description;
     }
-
-    public void setLocation(Location location) {
-        if (this.location != null) {
-            this.location.getImages().remove(this);
-        }
-
-        this.location = location;
-        location.getImages().add(this);
-    }
 }

@@ -27,7 +27,8 @@ public enum ExceptionCode {
     AUTHENTICATION_NOT_FOUND(3006, "Authentication information is missing in the Security Context."),
 
     // Entity
-    ENTITY_NOT_FOUND(4001, "No results found");
+    ENTITY_NOT_FOUND(4001, "No results found"),
+    UNSUPPORTED_ENTITY_TYPE(4002, "Unsupported entity type encountered");
 
     private final int code;
     private final String message;

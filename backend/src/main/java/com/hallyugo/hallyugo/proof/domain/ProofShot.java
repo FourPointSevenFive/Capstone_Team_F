@@ -18,7 +18,7 @@ import java.time.LocalDateTime;
 @EntityListeners(AuditingEntityListener.class)
 @Entity
 @Table(name = "proof_shot")
-public class Proof {
+public class ProofShot {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -41,7 +41,7 @@ public class Proof {
     @CreatedDate
     private LocalDateTime createdAt;
 
-    public Proof(User user, Location location, String imageUrl, String description) {
+    public ProofShot(User user, Location location, String imageUrl, String description) {
         this.user = user;
         this.location = location;
         this.imageUrl = imageUrl;
