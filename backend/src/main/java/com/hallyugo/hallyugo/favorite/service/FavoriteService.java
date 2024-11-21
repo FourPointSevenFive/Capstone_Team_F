@@ -8,6 +8,8 @@ import com.hallyugo.hallyugo.favorite.domain.Favorite;
 import com.hallyugo.hallyugo.favorite.domain.response.FavoriteResponseDto;
 import com.hallyugo.hallyugo.favorite.domain.response.FavoriteResponseItem;
 import com.hallyugo.hallyugo.favorite.repository.FavoriteRepository;
+import com.hallyugo.hallyugo.image.domain.Image;
+import com.hallyugo.hallyugo.image.repository.ImageRepository;
 import com.hallyugo.hallyugo.location.domain.Location;
 import com.hallyugo.hallyugo.location.repository.LocationRepository;
 import com.hallyugo.hallyugo.user.domain.User;
@@ -23,6 +25,7 @@ public class FavoriteService {
     private final FavoriteRepository favoriteRepository;
     private final ContentRepository contentRepository;
     private final LocationRepository locationRepository;
+    private final ImageRepository imageRepository;
 
     public FavoriteResponseDto getFavoritesByUser(User user, int limit) {
         List<Favorite> favorites = favoriteRepository.findByUserId(user.getId());
@@ -55,11 +58,26 @@ public class FavoriteService {
                 item.setImage(content.getContentImageUrl());
             }
             case LOCATION -> {
+                // TODO
+                // image 설정을 Image 테이블에서 가져오는 것으로 수정해야함
+
                 Location location = locationRepository.findById(favorite.getEntityId())
                         .orElseThrow(() -> new EntityNotFoundException(ExceptionCode.ENTITY_NOT_FOUND));
                 item.setTitle(location.getTitle());
                 item.setDescription(location.getDescription());
-                item.setImage(location.getImages().getFirst().getImageUrl());
+
+                // ImageRepository를 사용하여 Location ID로 이미지를 조회
+                List<Image> images = imageRepository.findByLocationId(location.getId());
+
+                if (!images.isEmpty()) {
+                    // 첫 번째 이미지를 사용
+                    Image image = images.get(0);
+                    item.setImage(image.getImageUrl()); // Image 테이블의 이미지 URL을 설정
+                } else {
+                    // 이미지가 없을 경우 기본값 또는 null 처리
+                    item.setImage(null);
+                }
+
             }
             default -> throw new EntityNotFoundException(ExceptionCode.UNSUPPORTED_ENTITY_TYPE);
         }
