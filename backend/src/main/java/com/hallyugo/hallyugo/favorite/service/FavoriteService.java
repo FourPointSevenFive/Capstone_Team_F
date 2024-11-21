@@ -58,9 +58,6 @@ public class FavoriteService {
                 item.setImage(content.getContentImageUrl());
             }
             case LOCATION -> {
-                // TODO
-                // image 설정을 Image 테이블에서 가져오는 것으로 수정해야함
-
                 Location location = locationRepository.findById(favorite.getEntityId())
                         .orElseThrow(() -> new EntityNotFoundException(ExceptionCode.ENTITY_NOT_FOUND));
                 item.setTitle(location.getTitle());
