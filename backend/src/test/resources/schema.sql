@@ -86,8 +86,7 @@ create table favorite
 (
     id                  bigint not null auto_increment,
     user_id             bigint,
-    entity_id           bigint,
-    entity_type         enum('CONTENT', 'LOCATION'),
+    location_id         bigint,
     created_at          datetime(6),
     primary key (id),
     foreign key (user_id) references users(id)

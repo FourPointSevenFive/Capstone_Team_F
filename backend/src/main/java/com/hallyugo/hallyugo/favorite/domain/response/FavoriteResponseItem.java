@@ -14,11 +14,8 @@ public class FavoriteResponseItem {
     @JsonProperty("id")
     private Long id;
 
-    @JsonProperty("entity_id")
-    private Long entityId;
-
-    @JsonProperty("entity_type")
-    private EntityType entityType;
+    @JsonProperty("location_id")
+    private Long locationId;
 
     @JsonProperty("title")
     private String title;

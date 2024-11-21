@@ -2,8 +2,6 @@ package com.hallyugo.hallyugo.favorite.service;
 
 import com.hallyugo.hallyugo.common.exception.EntityNotFoundException;
 import com.hallyugo.hallyugo.common.exception.ExceptionCode;
-import com.hallyugo.hallyugo.content.domain.Content;
-import com.hallyugo.hallyugo.content.repository.ContentRepository;
 import com.hallyugo.hallyugo.favorite.domain.Favorite;
 import com.hallyugo.hallyugo.favorite.domain.response.FavoriteResponseDto;
 import com.hallyugo.hallyugo.favorite.domain.response.FavoriteResponseItem;
@@ -23,7 +21,6 @@ import java.util.List;
 public class FavoriteService {
 
     private final FavoriteRepository favoriteRepository;
-    private final ContentRepository contentRepository;
     private final LocationRepository locationRepository;
     private final ImageRepository imageRepository;
 
@@ -45,38 +42,24 @@ public class FavoriteService {
     private FavoriteResponseItem createFavoriteResponseItem(Favorite favorite) {
         FavoriteResponseItem item = new FavoriteResponseItem();
         item.setId(favorite.getId());
-        item.setEntityId(favorite.getEntityId());
-        item.setEntityType(favorite.getEntityType());
+        item.setLocationId(favorite.getLocation().getId());
         item.setCreatedAt(favorite.getCreatedAt());
 
-        switch (favorite.getEntityType()) {
-            case CONTENT -> {
-                Content content = contentRepository.findById(favorite.getEntityId())
-                        .orElseThrow(() -> new EntityNotFoundException(ExceptionCode.ENTITY_NOT_FOUND));
-                item.setTitle(content.getTitle());
-                item.setDescription(content.getDescription());
-                item.setImage(content.getContentImageUrl());
-            }
-            case LOCATION -> {
-                Location location = locationRepository.findById(favorite.getEntityId())
-                        .orElseThrow(() -> new EntityNotFoundException(ExceptionCode.ENTITY_NOT_FOUND));
-                item.setTitle(location.getTitle());
-                item.setDescription(location.getDescription());
+        Location location = locationRepository.findById(favorite.getLocation().getId())
+                .orElseThrow(() -> new EntityNotFoundException(ExceptionCode.ENTITY_NOT_FOUND));
+        item.setTitle(location.getTitle());
+        item.setDescription(location.getDescription());
 
-                // ImageRepository를 사용하여 Location ID로 이미지를 조회
-                List<Image> images = imageRepository.findByLocationId(location.getId());
+        // ImageRepository를 사용하여 Location ID로 이미지를 조회
+        List<Image> images = imageRepository.findByLocationId(location.getId());
 
-                if (!images.isEmpty()) {
-                    // 첫 번째 이미지를 사용
-                    Image image = images.get(0);
-                    item.setImage(image.getImageUrl()); // Image 테이블의 이미지 URL을 설정
-                } else {
-                    // 이미지가 없을 경우 기본값 또는 null 처리
-                    item.setImage(null);
-                }
-
-            }
-            default -> throw new EntityNotFoundException(ExceptionCode.UNSUPPORTED_ENTITY_TYPE);
+        if (!images.isEmpty()) {
+            // 첫 번째 이미지를 사용
+            Image image = images.get(0);
+            item.setImage(image.getImageUrl()); // Image 테이블의 이미지 URL을 설정
+        } else {
+            // 이미지가 없을 경우 기본값 또는 null 처리
+            item.setImage(null);
         }
         return item;
     }

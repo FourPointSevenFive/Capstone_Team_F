@@ -67,17 +67,17 @@ INSERT INTO image (id, location_id, image_url, description, created_at)
 VALUES (3, 2, 'http://example.com/image1_location2.jpg', 'Image description for location 2', NOW());
 
 -- 5. Favorite 테이블 데이터 삽입
-INSERT INTO favorite (id, user_id, entity_id, entity_type, created_at)
-VALUES (1, 1, 1, 'CONTENT', NOW());
+INSERT INTO favorite (id, user_id, location_id, created_at)
+VALUES (1, 1, 1, NOW());
 
-INSERT INTO favorite (id, user_id, entity_id, entity_type, created_at)
-VALUES (2, 1, 2, 'LOCATION', NOW());
+INSERT INTO favorite (id, user_id, location_id, created_at)
+VALUES (2, 1, 2, NOW());
 
-INSERT INTO favorite (id, user_id, entity_id, entity_type, created_at)
-VALUES (3, 2, 2, 'LOCATION', NOW());
+INSERT INTO favorite (id, user_id, location_id, created_at)
+VALUES (3, 2, 3, NOW());
 
-INSERT INTO favorite (id, user_id, entity_id, entity_type, created_at)
-VALUES (4, 2, 1, 'CONTENT', NOW());
+INSERT INTO favorite (id, user_id, location_id, created_at)
+VALUES (4, 2, 4, NOW());
 
 -- 6. ProofShot 테이블 데이터 삽입
 INSERT INTO proof_shot (user_id, location_id, image_url, description, created_at)
