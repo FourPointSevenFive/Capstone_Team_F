@@ -1,19 +1,14 @@
-import { ACCESS_TOKEN_EXPIRE_TIME } from "@/lib/constants";
 import { encode, getToken } from "next-auth/jwt";
-import { parseCookie } from "next/dist/compiled/@edge-runtime/cookies";
 import { NextResponse, type NextRequest } from "next/server";
 import { baseUrl } from "./lib/constants";
 
-const getAuthToken = (res: Response) => {
-  const Authorization = res.headers.get("authorization") as string;
-  const parsedCookie = parseCookie(res.headers.get("set-cookie") || "");
-  const refreshToken = parsedCookie.get("refresh_token") as string;
-  const refreshTokenExpires = parsedCookie.get("Expires") as string;
+const getAuthTokenFromResponse = async (res: Response) => {
+  const data = await res.json();
   return {
-    accessToken: Authorization,
-    refreshToken,
-    accessTokenExpires: Date.now() + ACCESS_TOKEN_EXPIRE_TIME - 30 * 1000, // 29 minutes 30 seconds
-    refreshTokenExpires: Date.parse(refreshTokenExpires) - 30 * 1000, // 23 hours 59 minutes 30 seconds
+    accessToken: data.accessToken,
+    refreshToken: data.refreshToken,
+    accessTokenExpires: Date.now() + 30 * 60 * 1000 - 30 * 1000, // 30 minutes - 30 seconds
+    refreshTokenExpires: Date.now() + 7 * 24 * 60 * 60 * 1000 - 30 * 1000, // 7 days - 30 seconds
   };
 };
 
@@ -23,25 +18,35 @@ const sessionCookieName = process.env.NEXTAUTH_URL?.startsWith("https://")
 
 export const middleware = async (req: NextRequest) => {
   const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
-  if (req.nextUrl.pathname.startsWith("/my") && !token)
-    return NextResponse.redirect(new URL("/landing", req.url));
 
+  // Redirect unauthenticated users trying to access restricted pages
+  if (req.nextUrl.pathname.startsWith("/my") && !token) {
+    return NextResponse.redirect(new URL("/my", req.url));
+  }
+
+  // Reissue access token if expired
   if (token && token.accessTokenExpires <= Date.now()) {
-    // If access token is expired, reissue access token.
-    const reissueRes = await fetch(baseUrl + "/auth/reissue", {
+    const reissueRes = await fetch(baseUrl + "/api/v1/auth/reissue", {
+      method: "POST",
       headers: {
-        cookie: `refresh_token=${token.refreshToken}`,
+        "Content-Type": "application/json",
       },
+      body: JSON.stringify({
+        accessToken: token.accessToken,
+        refreshToken: token.refreshToken,
+      }),
       cache: "no-store",
     });
+
     if (reissueRes.ok) {
-      // If reissue is successful, update session token.
+      // Update session token with new tokens
       const {
         accessToken,
         refreshToken,
         accessTokenExpires,
         refreshTokenExpires,
-      } = getAuthToken(reissueRes);
+      } = await getAuthTokenFromResponse(reissueRes);
+
       const newToken = await encode({
         secret: process.env.NEXTAUTH_SECRET as string,
         token: {
@@ -51,8 +56,9 @@ export const middleware = async (req: NextRequest) => {
           accessTokenExpires,
           refreshTokenExpires,
         },
-        maxAge: 24 * 60 * 60, // 24 hours
+        maxAge: 7 * 24 * 60 * 60, // 7 days
       });
+
       req.cookies.set(sessionCookieName, newToken);
       const res = NextResponse.next({
         request: {
@@ -60,14 +66,13 @@ export const middleware = async (req: NextRequest) => {
         },
       });
       res.cookies.set(sessionCookieName, newToken, {
-        // for client setCookie
-        maxAge: 24 * 60 * 60,
+        maxAge: 7 * 24 * 60 * 60,
         httpOnly: true,
         sameSite: "lax",
       });
       return res;
-    } else if (reissueRes.status == 401) {
-      // If reissue is failed, delete session token.
+    } else if (reissueRes.status === 401) {
+      // If reissue fails, clear the session token
       req.cookies.delete(sessionCookieName);
       const res = NextResponse.next({
         request: {
@@ -78,6 +83,8 @@ export const middleware = async (req: NextRequest) => {
       return res;
     }
   }
+
+  // Continue request if no issues
   return NextResponse.next({
     request: {
       headers: req.headers,

@@ -15,6 +15,11 @@ export default function LandingPage() {
         <Link href="./signup">
           <Button className="w-full bg-slate-400">Sign Up</Button>
         </Link>
+        <Link href="./">
+          <Button className="mt-8 w-full" variant="ghost">
+            Continue As A Guest
+          </Button>
+        </Link>
       </div>
     </div>
   );

@@ -4,11 +4,7 @@ import { Input } from "@/components/ui/input";
 export default function SignupPage() {
   return (
     <div className="flex flex-col gap-8 px-8">
-      <div className="flex justify-between gap-4">
-        <Input placeholder="First Name" className="h-12 bg-slate-100" />
-        <Input placeholder="Last Name" className="h-12 bg-slate-100" />
-      </div>
-
+      <Input placeholder="NickName" className="h-12 bg-slate-100" />
       <Input placeholder="Email" type="email" className="h-12 bg-slate-100" />
       <Input
         placeholder="Password"

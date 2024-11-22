@@ -29,19 +29,26 @@ export const fetcherWithAuth = fetcher.extend({
   hooks: {
     beforeRequest: [
       async (request) => {
-        // Add access token to request header if user is logged in.
+        // Add Bearer token to Authorization header if user is logged in.
         const session = await auth();
-        if (session)
-          request.headers.set("Authorization", session.token.accessToken);
+        if (session) {
+          request.headers.set(
+            "Authorization",
+            `Bearer ${session.token.accessToken}`,
+          );
+        }
       },
     ],
     afterResponse: [
-      // Retry option is not working, so we use this workaround.
+      // Retry if the response status is 401 (unauthorized).
       async (request, options, response) => {
         if (response.status === 401) {
           const session = await auth();
           if (session) {
-            request.headers.set("Authorization", session.token.accessToken);
+            request.headers.set(
+              "Authorization",
+              `Bearer ${session.token.accessToken}`,
+            );
             fetcher(request, {
               ...options,
               hooks: {}, // Remove hooks to prevent infinite loop.

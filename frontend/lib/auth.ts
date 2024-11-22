@@ -9,18 +9,14 @@ import {
 import type { JWT } from "next-auth/jwt";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { getSession } from "next-auth/react";
-import { parseCookie } from "next/dist/compiled/@edge-runtime/cookies";
 
-const getAuthToken = (res: Response) => {
-  const Authorization = res.headers.get("authorization") as string;
-  const parsedCookie = parseCookie(res.headers.get("set-cookie") || "");
-  const refreshToken = parsedCookie.get("refresh_token") as string;
-  const refreshTokenExpires = parsedCookie.get("Expires") as string;
+const getAuthTokenFromJson = async (res: Response) => {
+  const data = await res.json();
   return {
-    accessToken: Authorization,
-    refreshToken,
+    accessToken: data.accessToken,
+    refreshToken: data.refreshToken,
     accessTokenExpires: Date.now() + ACCESS_TOKEN_EXPIRE_TIME - 30 * 1000, // 29 minutes 30 seconds
-    refreshTokenExpires: Date.parse(refreshTokenExpires) - 30 * 1000, // 23 hours 59 minutes 30 seconds
+    refreshTokenExpires: Date.now() + 1000 * 60 * 60 * 24 - 30 * 1000, // 23 hours 59 minutes 30 seconds
   };
 };
 
@@ -29,31 +25,36 @@ export const authOptions: NextAuthOptions = {
     CredentialsProvider({
       name: "Credentials",
       credentials: {
-        username: { label: "username", type: "text" },
-        password: { label: "password", type: "password" },
+        username: { label: "Username", type: "text" },
+        password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
-        const res = await fetcher.post("auth/login", {
+        // Log in API request
+        const res = await fetcher.post("/api/v1/auth/login", {
           json: {
             username: credentials?.username,
             password: credentials?.password,
+            nickname: null,
           },
         });
+
         if (res.ok) {
-          // If login is successful, get user data.
+          // Extract tokens from JSON response
           const {
             accessToken,
             refreshToken,
             refreshTokenExpires,
             accessTokenExpires,
-          } = getAuthToken(res);
-          const userRes = await fetcher.get("user", {
+          } = await getAuthTokenFromJson(res);
+
+          // Fetch user data
+          const userRes = await fetcher.get("/api/v1/auth/user", {
             headers: {
-              Authorization: accessToken,
+              Authorization: `Bearer ${accessToken}`,
             },
           });
+
           if (userRes.ok) {
-            // If user data is successfully fetched, return user data.
             const user: User = await userRes.json();
             return {
               username: user.username,
@@ -64,7 +65,8 @@ export const authOptions: NextAuthOptions = {
             } as User;
           }
         }
-        // If login is failed
+
+        // Return null if login fails
         return null;
       },
     }),
@@ -76,7 +78,6 @@ export const authOptions: NextAuthOptions = {
   callbacks: {
     jwt: async ({ token, user }: { token: JWT; user?: User }) => {
       if (user) {
-        // When user logs in, set token. (Only when user tries to login, user will not be undefined.)
         token.username = user.username;
         token.accessToken = user.accessToken;
         token.refreshToken = user.refreshToken;
@@ -86,7 +87,6 @@ export const authOptions: NextAuthOptions = {
       return token;
     },
     session: async ({ session, token }: { session: Session; token: JWT }) => {
-      // When user requests session, then call jwt callback. and then call this callback.
       session.user = {
         username: token.username,
       };
