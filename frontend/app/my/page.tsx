@@ -2,7 +2,7 @@ import Header from "../_components/Header";
 import MapContainer from "../_components/Map";
 import LocationCard from "../map/_components/LocationCard";
 import Stamp from "./_components/Stamp";
-import CustomBadge from "../_components/CustomBadge";
+//import CustomBadge from "../_components/CustomBadge";
 import PieChart from "./_components/PieChart";
 
 export default function Page() {
@@ -27,7 +27,7 @@ const MyList = () => {
   return (
     <div className="pt-4">
       <div className="pl-1 pr-1">
-        <Title title="My List" total={total}/>
+        <Title title="My List" total={total} />
       </div>
       <div className="flex flex-col gap-3">
         <LocationCard
@@ -48,29 +48,30 @@ const MyList = () => {
 };
 
 const MyProofShot = () => {
-  const total = 21
+  const total = 21;
   return (
-    <div className="flex w-full flex-col gap-5 pr-1 pl-1">
+    <div className="flex w-full flex-col gap-5 pl-1 pr-1">
       <Title title="My ProofShots" total={total} />
       <div className="grid grid-cols-3 gap-1">
         {Array.from({ length: 10 }).map((_, index) => (
           <div
             key={index}
-            className="pl-1 pr-1 flex aspect-square items-center justify-center bg-neutral-200">
+            className="flex aspect-square items-center justify-center bg-neutral-200 pl-1 pr-1"
+          >
             photo {index + 1}
           </div>
         ))}
       </div>
     </div>
   );
-}
+};
 
 const MyStamps = () => {
   const total = 10; //  TODO: fetch from API
   return (
     <div>
       <Title title="My Stamps" total={total} />
-      <div className="mx-auto grid max-w-xl aspect-square grid-cols-3 gap-x-3 gap-y-3">
+      <div className="mx-auto grid aspect-square max-w-xl grid-cols-3 gap-x-3 gap-y-3">
         <Stamp title="Bongsuyuk" date="July 7, 2023" />
         <Stamp title="SKKU" date="July 7, 2023" />
         <Stamp title="Busan" date="July 7, 2023" />
@@ -91,8 +92,11 @@ const MyStats = () => {
   return (
     <div className="flex flex-col gap-2">
       <Title title="My Stats" />
-      <div className="flex flex-col justify-center items-center pt-3">
-        <PieChart data={[50, 40, 30, 10]} labels={["kpop", "drama", "movie", "novel"]} />
+      <div className="flex flex-col items-center justify-center pt-3">
+        <PieChart
+          data={[50, 40, 30, 10]}
+          labels={["kpop", "drama", "movie", "novel"]}
+        />
       </div>
     </div>
   );
