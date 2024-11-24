@@ -54,7 +54,7 @@ jobs:
           key: ${{ secrets.EC2_KEY }}
           script: |
             # 기존 컨테이너 중지 및 삭제
-            cd /home/ec2-user/hallyugo-server
+            cd /home/${{ secrets.EC2_USERNAME }}/hallyugo-server
             sudo docker-compose stop
             sudo docker-compose rm -f
             sudo docker rmi ${{ secrets.DOCKER_HUB_USERNAME }}/hallyugo-backend:latest
