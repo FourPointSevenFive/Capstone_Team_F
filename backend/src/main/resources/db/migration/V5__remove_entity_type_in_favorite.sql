@@ -12,4 +12,5 @@ ADD COLUMN location_id BIGINT;
 -- Add foreign key constraint for location_id
 ALTER TABLE favorite
 ADD CONSTRAINT fk_favorite_location
-FOREIGN KEY (location_id) REFERENCES location(id);
+FOREIGN KEY (location_id) REFERENCES location(id)
+ON DELETE CASCADE;
