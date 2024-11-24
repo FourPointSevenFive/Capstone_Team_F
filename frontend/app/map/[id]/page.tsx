@@ -4,8 +4,7 @@ import Image from "next/image";
 import kheart from "@/public/kheart_gray.png";
 import { Button } from "@/components/ui/button";
 
-export default async function Page({ params }: { params: { id: string } }) {
-  const { id } = await params;
+export default async function Page() {
   return (
     <div className="flex flex-col items-center gap-5">
       <div className="self-end">

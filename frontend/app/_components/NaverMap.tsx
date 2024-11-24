@@ -3,8 +3,6 @@
 import Script from "next/script";
 import { Coordinates, NaverMap } from "@/app/types/naverMaps";
 import { useCallback, useRef } from "react";
-import { Suspense } from "react";
-import MapSkeleton from "./MapSkeleton";
 
 const mapId = "naver-map";
 
