@@ -35,7 +35,7 @@ jobs:
       # DockerHub Push
       - name: Build and Push Docker image
         run: |
-          docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/hallyugo-backend
+          docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/hallyugo-backend .
           docker push ${{ secrets.DOCKER_HUB_USERNAME }}/hallyugo-backend
 
   deploy:
