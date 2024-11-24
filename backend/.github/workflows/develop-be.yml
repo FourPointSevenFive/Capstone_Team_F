@@ -3,10 +3,10 @@ name: Hallyugo-backend dev CI/CD Pipeline
 on:
   push:
     paths: "backend/**"
-    branches: ["main"]
+    branches: [ main ]
   pull_request:
     paths: "backend/**"
-    branches: ["main"]
+    branches: [ main ]
 
 jobs:
   build:
