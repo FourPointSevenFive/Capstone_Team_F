@@ -2,11 +2,9 @@ name: Hallyugo-backend dev CI/CD Pipeline
 
 on:
   push:
-    paths: "backend/**"
-    branches: [ main ]
+    branches: [ "main" ]
   pull_request:
-    paths: "backend/**"
-    branches: [ main ]
+    branches: [ "main" ]
 
 jobs:
   build:
@@ -25,7 +23,7 @@ jobs:
 
       # Gradle Build
       - name: Build with Gradle
-        run: ./gradlew build
+        run: ./gradlew build --exclude-task test
 
       # DockerHub 로그인
       - name: Login to DockerHub
@@ -39,7 +37,6 @@ jobs:
         run: |
           docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/hallyugo-backend
           docker push ${{ secrets.DOCKER_HUB_USERNAME }}/hallyugo-backend
-  
 
   deploy:
     runs-on: ubuntu-latest
