@@ -42,5 +42,6 @@ out/
 **/.DS_Store
 
 ### application.properties ###
-src/main/resources/application.properties
+#src/main/resources/application.properties
+#src/main/resources/application-aws.properties
 src/test/resources/application-test.properties
