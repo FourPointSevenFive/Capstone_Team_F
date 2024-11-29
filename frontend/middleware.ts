@@ -21,7 +21,7 @@ export const middleware = async (req: NextRequest) => {
 
   // Redirect unauthenticated users trying to access restricted pages
   if (req.nextUrl.pathname.startsWith("/my") && !token) {
-    return NextResponse.redirect(new URL("/my", req.url));
+    return NextResponse.redirect(new URL("/landing", req.url));
   }
 
   // Reissue access token if expired
