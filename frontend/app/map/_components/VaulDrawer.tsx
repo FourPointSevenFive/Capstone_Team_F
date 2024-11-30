@@ -5,7 +5,7 @@ import { useState } from "react";
 import { Drawer } from "vaul";
 import LocationCard from "./LocationCard";
 
-const snapPoints = ["148px", "355px", 1];
+const snapPoints = ["350px", "355px", 1];
 
 export default function VaulDrawer() {
   const [snap, setSnap] = useState<number | string | null>(snapPoints[0]);

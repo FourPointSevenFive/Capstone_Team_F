@@ -19,11 +19,6 @@ const sessionCookieName = process.env.NEXTAUTH_URL?.startsWith("https://")
 export const middleware = async (req: NextRequest) => {
   const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
 
-  // Redirect unauthenticated users trying to access restricted pages
-  if (req.nextUrl.pathname.startsWith("/my") && !token) {
-    return NextResponse.redirect(new URL("/landing", req.url));
-  }
-
   // Reissue access token if expired
   if (token && token.accessTokenExpires <= Date.now()) {
     const reissueRes = await fetch(baseUrl + "/api/v1/auth/reissue", {

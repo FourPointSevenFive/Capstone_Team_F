@@ -21,7 +21,7 @@ export default function CarousselMain() {
                 <CardContent className="flex h-60 items-center justify-center bg-gradient-to-tl from-blue-100 to-red-50">
                   <div className="flex w-full items-center justify-between">
                     <div className="mt-8 flex flex-col gap-5">
-                      <p className="text-5xl font-bold">HallyuGo</p>
+                      <p className="text-3xl font-bold">HallyuGo</p>
                       <p className="text-sm font-semibold">
                         Map App for K-culuture Lover
                       </p>
@@ -35,7 +35,7 @@ export default function CarousselMain() {
                     <Image
                       src={carouselLogo}
                       alt="init carousel"
-                      height={200}
+                      height={150}
                     />
                   </div>
                 </CardContent>
