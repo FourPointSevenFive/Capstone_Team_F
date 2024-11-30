@@ -1,16 +1,29 @@
+"use client";
 import Header from "../_components/Header";
 import MapContainer from "../_components/Map";
 import LocationCard from "../map/_components/LocationCard";
 import Stamp from "./_components/Stamp";
 //import CustomBadge from "../_components/CustomBadge";
 import PieChart from "./_components/PieChart";
+import { signOut } from "next-auth/react";
+import { Button } from "@/components/ui/button";
+import { CiLogout } from "react-icons/ci";
 
 export default function Page() {
   return (
-    <div className="flex flex-col gap-5">
-      <div className="flex justify-between">
+    <div className="flex flex-col">
+      <div className="flex flex-col justify-between">
         <Header />
+        <Button
+          variant="ghost"
+          className="self-end p-0"
+          onClick={() => signOut()}
+        >
+          <CiLogout />
+          Log out
+        </Button>
       </div>
+      <Title title="My Page" />
       <MapContainer />
       <div className="flex flex-col gap-20">
         <MyList />

@@ -15,18 +15,21 @@ export default function SignInPage() {
 
     try {
       const res = await signIn("credentials", {
+        redirect: false,
         username,
         password,
       });
 
-      if (res && res.ok) {
-        window.location.href = "./";
+      console.log("res: ", res);
+      if (res && !res.error) {
+        console.log("Signed in: ", res);
+        window.location.href = "/";
       } else {
         setError("Failed to sign in. Please check your credentials.");
       }
     } catch (error) {
-      console.error("Failed to sign in: ", error);
-      setError("An unexpected error occurred. Please try again.");
+      //console.error("Failed to sign in: ", error);
+      setError("An unexpected error occurred. Please try again.: " + error);
     }
   };
 
