@@ -19,8 +19,6 @@ public class CorsConfig {
         config.addAllowedHeader("*");
         config.addAllowedMethod("*");
 
-        // TODO
-        // API path 수정
         source.registerCorsConfiguration("/**", config);
         return source;
     }
