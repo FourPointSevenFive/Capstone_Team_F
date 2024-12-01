@@ -37,7 +37,7 @@ export default function SignInPage() {
     <div className="flex flex-col gap-8 px-8">
       <form onSubmit={onSubmit} className="flex flex-col gap-4">
         <Input
-          placeholder="Email"
+          placeholder="Id"
           type="text"
           className="h-12 bg-slate-100"
           value={username}

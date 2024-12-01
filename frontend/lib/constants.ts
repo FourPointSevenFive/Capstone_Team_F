@@ -1,5 +1,4 @@
-export const baseUrl =
-  "http://ec2-43-201-39-248.ap-northeast-2.compute.amazonaws.com:8080"; //api base url
+export const baseUrl = "http://hallyugo.com:8080"; //api base url
 const MILLSECONDS_PER_MINUTE = 60000;
 
 /**
