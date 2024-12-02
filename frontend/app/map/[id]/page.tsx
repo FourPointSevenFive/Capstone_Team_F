@@ -42,7 +42,7 @@ function StampSection() {
 
 function ProofShoots() {
   return (
-    <div className="flex w-full flex-col gap-5 p-10">
+    <div className="flex w-full flex-col gap-5 py-10">
       <div className="flex items-center justify-between">
         <h1 className="font-semibold">Proof Shoots</h1>
         <Button className="h-5 w-12 rounded-3xl bg-blue-300 text-xs hover:bg-blue-400">
@@ -53,7 +53,8 @@ function ProofShoots() {
         {Array.from({ length: 10 }).map((_, index) => (
           <div
             key={index}
-            className="flex aspect-square items-center justify-center bg-neutral-200">
+            className="flex aspect-square items-center justify-center bg-neutral-200"
+          >
             photo {index + 1}
           </div>
         ))}

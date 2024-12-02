@@ -1,4 +1,4 @@
-export const baseUrl = "http://localhost:3000"; //api base url
+export const baseUrl = "http://hallyugo.com:8080"; //api base url
 const MILLSECONDS_PER_MINUTE = 60000;
 
 /**

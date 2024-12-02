@@ -1,3 +1,4 @@
+import { randomBytes, randomUUID } from "crypto";
 import type { NextAuthOptions, Session, User } from "next-auth";
 import { JWT } from "next-auth/jwt";
 import CredentialsProvider from "next-auth/providers/credentials";
@@ -12,7 +13,7 @@ export const options: NextAuthOptions = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
-        const res = await fetch("/api/v1/auth/login", {
+        const res = await fetch("http://hallyugo.com:8080/api/v1/auth/login", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(credentials),
@@ -20,8 +21,12 @@ export const options: NextAuthOptions = {
 
         const user = await res.json();
         if (res.ok && user) {
-          return user;
+          return {
+            ...user,
+            username: credentials?.username,
+          };
         }
+        console.error("Failed to log in: ", user);
         return null;
       },
     }),
@@ -30,6 +35,10 @@ export const options: NextAuthOptions = {
   session: {
     strategy: "jwt",
     maxAge: 24 * 60 * 60, // 24 hours
+    updateAge: 24 * 60 * 60, // 24 hours
+    generateSessionToken: () => {
+      return randomUUID?.() ?? randomBytes(32).toString("hex");
+    },
   },
 
   callbacks: {
@@ -44,7 +53,6 @@ export const options: NextAuthOptions = {
     async session({ session, token }: { session: Session; token: JWT }) {
       session.user = {
         username: token.username,
-        role: token.role,
       };
 
       session.token = {
