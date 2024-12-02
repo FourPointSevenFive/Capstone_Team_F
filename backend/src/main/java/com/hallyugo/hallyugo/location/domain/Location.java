@@ -61,17 +61,6 @@ public class Location {
     @LastModifiedDate
     private LocalDateTime updatedAt;
 
-    public Location(String title, BigDecimal latitude, BigDecimal longitude, String description,
-                    String videoLink, Long favoriteCount, String pose) {
-        this.title = title;
-        this.latitude = latitude;
-        this.longitude = longitude;
-        this.description = description;
-        this.videoLink = videoLink;
-        this.favoriteCount = favoriteCount;
-        this.pose = pose;
-    }
-
     public void setContent(Content content) {
         if (this.content != null) {
             this.content.getLocations().remove(this);
