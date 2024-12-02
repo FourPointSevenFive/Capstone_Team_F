@@ -1,6 +1,6 @@
 package com.hallyugo.hallyugo.content.controller;
 
-import com.hallyugo.hallyugo.content.domain.ContentResponseDto;
+import com.hallyugo.hallyugo.content.domain.response.ContentResponseDto;
 import com.hallyugo.hallyugo.content.service.ContentService;
 import java.util.List;
 import java.util.Map;

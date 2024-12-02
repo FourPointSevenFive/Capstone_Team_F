@@ -8,7 +8,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.hallyugo.hallyugo.auth.AuthUserArgumentResolver;
 import com.hallyugo.hallyugo.content.domain.Category;
 import com.hallyugo.hallyugo.content.domain.Content;
-import com.hallyugo.hallyugo.content.domain.ContentResponseDto;
+import com.hallyugo.hallyugo.content.domain.response.ContentResponseDto;
 import com.hallyugo.hallyugo.content.service.ContentService;
 import java.util.ArrayList;
 import java.util.Arrays;

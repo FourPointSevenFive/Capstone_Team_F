@@ -2,7 +2,7 @@ package com.hallyugo.hallyugo.content.service;
 
 import com.hallyugo.hallyugo.content.domain.Category;
 import com.hallyugo.hallyugo.content.domain.Content;
-import com.hallyugo.hallyugo.content.domain.ContentResponseDto;
+import com.hallyugo.hallyugo.content.domain.response.ContentResponseDto;
 import com.hallyugo.hallyugo.content.repository.ContentRepository;
 import jakarta.transaction.Transactional;
 import java.util.ArrayList;
