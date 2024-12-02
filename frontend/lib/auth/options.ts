@@ -36,9 +36,6 @@ export const options: NextAuthOptions = {
     strategy: "jwt",
     maxAge: 24 * 60 * 60, // 24 hours
     updateAge: 24 * 60 * 60, // 24 hours
-    generateSessionToken: () => {
-      return randomUUID?.() ?? randomBytes(32).toString("hex");
-    },
   },
 
   callbacks: {
