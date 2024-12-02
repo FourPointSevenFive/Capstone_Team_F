@@ -19,6 +19,9 @@ export default function Page() {
       <div className="flex flex-col">
         <div className="flex flex-col justify-between">
           <Header />
+        </div>
+        <div className="mb-4 flex w-full items-center justify-between">
+          <p className="text-xl font-bold">My Page</p>
           <Button
             variant="ghost"
             className="self-end p-0"
@@ -28,7 +31,7 @@ export default function Page() {
             Log out
           </Button>
         </div>
-        <Title title="My Page" />
+
         <MapContainer />
         <div className="flex flex-col gap-20">
           <MyList />
@@ -123,7 +126,7 @@ const MyStats = () => {
 
 const Title = ({ title, total }: { title: string; total?: number }) => {
   return (
-    <div className="mb-5 flex justify-between">
+    <div className="flex justify-between">
       <p className="text-xl font-bold">{title}</p>
       {total && (
         <div className="flex gap-2 self-end">

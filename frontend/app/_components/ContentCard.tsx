@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 
 export default function ContentCard({
@@ -8,7 +9,7 @@ export default function ContentCard({
 }: {
   title: string;
   description: string;
-  image?: string;
+  image: string;
   link?: string;
   hashtags?: string;
 }) {
@@ -20,7 +21,16 @@ export default function ContentCard({
           <p className="text-xs text-slate-500">{description}</p>
           <p className="text-xs text-blue-500">{hashtags}</p>
         </div>
-        <div className="size-24 rounded-[12px] bg-neutral-200">{image}</div>
+        <div className="flex items-center">
+          <Image
+            src={image}
+            alt={image}
+            width={120} // 고정된 너비
+            height={0} // 높이 자동 조정
+            style={{ height: "auto" }}
+            className="overflow-hidden rounded-lg"
+          />
+        </div>
       </div>
     </Link>
   );
