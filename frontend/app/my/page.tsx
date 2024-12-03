@@ -26,31 +26,34 @@ export default function Page() {
 
   return (
     <>
-      {status === "unauthenticated" && <RedirectModal />}
-      <div className="flex flex-col">
-        <div className="flex flex-col justify-between">
-          <Header />
-        </div>
-        <div className="mb-4 flex w-full items-center justify-between">
-          <p className="text-xl font-bold">My Page</p>
-          <Button
-            variant="ghost"
-            className="self-end p-0"
-            onClick={() => signOut()}
-          >
-            <CiLogout />
-            Log out
-          </Button>
-        </div>
+      {status === "unauthenticated" ? (
+        <RedirectModal />
+      ) : (
+        <div className="flex flex-col">
+          <div className="flex flex-col justify-between">
+            <Header />
+          </div>
+          <div className="mb-4 flex w-full items-center justify-between">
+            <p className="text-xl font-bold">My Page</p>
+            <Button
+              variant="ghost"
+              className="self-end p-0"
+              onClick={() => signOut()}
+            >
+              <CiLogout />
+              Log out
+            </Button>
+          </div>
 
-        <MapContainer />
-        <div className="flex flex-col gap-20">
-          <MyList />
-          <MyProofShot />
-          <MyStamps />
-          <MyStats />
+          <MapContainer />
+          <div className="flex flex-col gap-20">
+            <MyList />
+            <MyProofShot />
+            <MyStamps />
+            <MyStats />
+          </div>
         </div>
-      </div>
+      )}
     </>
   );
 }

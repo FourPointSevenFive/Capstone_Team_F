@@ -11,7 +11,6 @@ import {
 import carouselLogo from "@/public/icons/carousel-logo.png";
 import Image from "next/image";
 import itzy from "@/public/itzy.png";
-import { Button } from "@/components/ui/button";
 
 export default function CarousselMain() {
   return (
@@ -22,7 +21,7 @@ export default function CarousselMain() {
             <Card>
               <CardContent className="flex h-60 items-center justify-center bg-gradient-to-tl from-blue-100 to-red-50">
                 <div className="flex w-full items-center justify-between">
-                  <div className="mt-8 flex flex-col gap-5">
+                  <div className="flex flex-col gap-5">
                     <p className="text-3xl font-bold">HallyuGo</p>
                     <p className="text-sm font-semibold">
                       Map App for K-culuture Lover
