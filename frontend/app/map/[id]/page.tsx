@@ -3,6 +3,7 @@ import { CiHeart } from "react-icons/ci";
 import Image from "next/image";
 import kheart from "@/public/kheart_gray.png";
 import { Button } from "@/components/ui/button";
+import { DialogueBox } from "./_components/DialogueBox";
 
 export default async function Page() {
   return (
@@ -30,13 +31,14 @@ export default async function Page() {
 
 function StampSection() {
   return (
-    <div className="border-1 flex h-32 w-80 flex-col items-center justify-center rounded-2xl border border-neutral-200">
-      <Image src={kheart} alt="kheart" width={50} height={50} />
-      <p className="text-center text-xs font-light text-neutral-400">
-        You haven't visited this place yet! <br></br>Please enable GPS and
-        collect your stamp!
-      </p>
-    </div>
+    <DialogueBox>
+      <div className="border-1 flex h-32 w-80 flex-col items-center justify-center rounded-2xl border border-neutral-200 cursor-pointer">
+        <Image src={kheart} alt="kheart" width={50} height={50} />
+        <p className="text-center text-xs font-light text-neutral-400">
+          You haven't visited this place yet! <br /> Please enable GPS and collect your stamp!
+        </p>
+      </div>
+    </DialogueBox>
   );
 }
 
