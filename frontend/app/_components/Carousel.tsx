@@ -6,6 +6,9 @@ import {
   CarouselContent,
   CarouselItem,
 } from "@/components/ui/carousel";
+import carouselLogo from "@/public/icons/carousel-logo.png";
+import Image from "next/image";
+import btn1 from "@/public/icons/carousel-btn-1.png";
 
 export default function CarousselMain() {
   return (
@@ -13,12 +16,28 @@ export default function CarousselMain() {
       <CarouselContent>
         {Array.from({ length: 3 }).map((_, index) => (
           <CarouselItem key={index}>
-            <div className="p-1">
+            <div>
               <Card>
-                <CardContent className="flex h-60 items-center justify-center bg-neutral-100 p-6">
-                  <span className="text-4xl font-semibold">
-                    Carousel {index + 1}
-                  </span>
+                <CardContent className="flex h-60 items-center justify-center bg-gradient-to-tl from-blue-100 to-red-50">
+                  <div className="flex w-full items-center justify-between">
+                    <div className="mt-8 flex flex-col gap-5">
+                      <p className="text-3xl font-bold">HallyuGo</p>
+                      <p className="text-sm font-semibold">
+                        Map App for K-culuture Lover
+                      </p>
+                      <Image
+                        src={btn1}
+                        alt="btn1"
+                        height={8}
+                        className="mt-10"
+                      />
+                    </div>
+                    <Image
+                      src={carouselLogo}
+                      alt="init carousel"
+                      height={150}
+                    />
+                  </div>
                 </CardContent>
               </Card>
             </div>

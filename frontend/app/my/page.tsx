@@ -1,24 +1,46 @@
+"use client";
 import Header from "../_components/Header";
 import MapContainer from "../_components/Map";
 import LocationCard from "../map/_components/LocationCard";
 import Stamp from "./_components/Stamp";
 //import CustomBadge from "../_components/CustomBadge";
 import PieChart from "./_components/PieChart";
+import { signOut, useSession } from "next-auth/react";
+import { Button } from "@/components/ui/button";
+import { CiLogout } from "react-icons/ci";
+import Link from "next/link";
 
 export default function Page() {
+  const { data: session, status } = useSession();
+
   return (
-    <div className="flex flex-col gap-5">
-      <div className="flex justify-between">
-        <Header />
+    <>
+      {status === "unauthenticated" && <RedirectModal />}
+      <div className="flex flex-col">
+        <div className="flex flex-col justify-between">
+          <Header />
+        </div>
+        <div className="mb-4 flex w-full items-center justify-between">
+          <p className="text-xl font-bold">My Page</p>
+          <Button
+            variant="ghost"
+            className="self-end p-0"
+            onClick={() => signOut()}
+          >
+            <CiLogout />
+            Log out
+          </Button>
+        </div>
+
+        <MapContainer />
+        <div className="flex flex-col gap-20">
+          <MyList />
+          <MyProofShot />
+          <MyStamps />
+          <MyStats />
+        </div>
       </div>
-      <MapContainer />
-      <div className="flex flex-col gap-20">
-        <MyList />
-        <MyProofShot />
-        <MyStamps />
-        <MyStats />
-      </div>
-    </div>
+    </>
   );
 }
 
@@ -104,7 +126,7 @@ const MyStats = () => {
 
 const Title = ({ title, total }: { title: string; total?: number }) => {
   return (
-    <div className="mb-5 flex justify-between">
+    <div className="flex justify-between">
       <p className="text-xl font-bold">{title}</p>
       {total && (
         <div className="flex gap-2 self-end">
@@ -113,5 +135,35 @@ const Title = ({ title, total }: { title: string; total?: number }) => {
         </div>
       )}
     </div>
+  );
+};
+
+const RedirectModal = () => {
+  return (
+    <>
+      <div className="absolute inset-0 z-50 flex items-center justify-center bg-black/50">
+        <div className="w-80 rounded-lg bg-white p-8 shadow-xl">
+          <h2 className="mb-4 text-xl font-bold text-gray-800">My Page</h2>
+          <p className="mb-6 text-gray-600">Please sign in to continue.</p>
+          <div className="flex justify-around">
+            <Link href="/login">
+              <button className="rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700">
+                Sign In
+              </button>
+            </Link>
+            <Link href="/">
+              <button className="rounded bg-gray-200 px-4 py-2 text-gray-800 hover:bg-gray-300">
+                Back to Home
+              </button>
+            </Link>
+          </div>
+        </div>
+      </div>
+      <style jsx global>{`
+        body {
+          overflow: hidden;
+        }
+      `}</style>
+    </>
   );
 };
