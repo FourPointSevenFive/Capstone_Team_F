@@ -51,4 +51,12 @@ public class ContentController {
         List<ContentForMapResponseDto> result = contentService.getContentsWithLocationsAndImagesByCategory(category);
         return ResponseEntity.ok(result);
     }
+
+    @GetMapping(value = "/location", params = "keyword")
+    public ResponseEntity<List<ContentForMapResponseDto>> searchContentsWithLocationsAndImagesByKeyword(
+            @RequestParam(name = "keyword") String keyword
+    ) {
+        List<ContentForMapResponseDto> result = contentService.getContentsWithLocationsAndImagesByKeyword(keyword);
+        return ResponseEntity.ok(result);
+    }
 }
