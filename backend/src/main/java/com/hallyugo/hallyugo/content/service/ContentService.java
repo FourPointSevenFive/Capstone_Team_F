@@ -72,4 +72,14 @@ public class ContentService {
         return contentDtos;
     }
 
+    public List<ContentForMapResponseDto> getContentsWithLocationsAndImagesByKeyword(String keyword) {
+        List<Content> contents = contentRepository.findByTitleContainingIgnoreCase(keyword);
+
+        return contents.stream().map(content -> {
+            List<LocationWithImagesResponseDto> locationsWithImages =
+                    locationService.getLocationsWithImagesByContentId(content.getId());
+            return ContentForMapResponseDto.toDto(content, locationsWithImages);
+        }).toList();
+    }
+
 }
