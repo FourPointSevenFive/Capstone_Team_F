@@ -8,6 +8,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import lombok.Getter;
 
@@ -67,6 +68,25 @@ public class LocationWithImagesResponseDto {
                 .collect(Collectors.toList());
 
         return new LocationWithImagesResponseDto(location, imageResponseDtos);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+
+        LocationWithImagesResponseDto that = (LocationWithImagesResponseDto) obj;
+
+        return Objects.equals(id, that.id);
     }
 
 }
