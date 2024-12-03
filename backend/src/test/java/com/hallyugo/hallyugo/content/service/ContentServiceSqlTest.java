@@ -17,7 +17,7 @@ import org.springframework.test.context.jdbc.Sql;
 @ActiveProfiles("test")
 @Sql("/data.sql")
 @SpringBootTest
-public class ContentServiceBySqlTest {
+public class ContentServiceSqlTest {
 
     @Autowired
     private ContentRepository contentRepository;
