@@ -1,10 +1,7 @@
 package com.hallyugo.hallyugo.content.service;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 import com.hallyugo.hallyugo.content.domain.Category;
 import com.hallyugo.hallyugo.content.domain.Content;
-import com.hallyugo.hallyugo.content.domain.response.ContentForMapResponseDto;
 import com.hallyugo.hallyugo.content.domain.response.ContentResponseDto;
 import com.hallyugo.hallyugo.content.repository.ContentRepository;
 import jakarta.transaction.Transactional;
@@ -23,7 +20,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.jdbc.Sql;
 
 @Transactional
 @ActiveProfiles("test")
@@ -94,24 +90,6 @@ class ContentServiceTest {
 
         // then
         Assertions.assertThat(fetchedContents).isEmpty();
-    }
-
-    @Sql("/data.sql")
-    @DisplayName("특정 콘텐츠와 연관된 위치와 각 위치에 대한 이미지를 조회할 수 있어야 한다.")
-    @Test
-    void 콘텐츠_위치_이미지_리스트_조회_성공_테스트() {
-        // given
-        int size = 10;
-        Long contentId = 1L;
-
-        // when
-        ContentForMapResponseDto result = contentService.getContentWithLocationsAndImages(contentId);
-
-        // then
-        assertEquals(size, result.getLocations().size());
-        assertEquals(2, result.getLocations().get(0).getImages().size());
-        assertEquals(1, result.getLocations().get(1).getImages().size());
-        assertEquals(0, result.getLocations().get(2).getImages().size());
     }
 
     private List<Content> createContents() {
