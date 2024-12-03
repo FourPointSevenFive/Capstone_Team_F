@@ -5,10 +5,9 @@ import com.hallyugo.hallyugo.stamp.domain.response.StampResponseDto;
 import com.hallyugo.hallyugo.stamp.domain.response.StampResponseItem;
 import com.hallyugo.hallyugo.stamp.repository.StampRepository;
 import com.hallyugo.hallyugo.user.domain.User;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -29,5 +28,14 @@ public class StampService {
         result.setTotal(stamps.size());
         result.setStamps(stampResponseItems);
         return result;
+    }
+
+    public StampResponseDto getStampsByUserAndLocation(User user, Long locationId) {
+        List<Stamp> stamps = stampRepository.findByUserIdAndLocationId(user.getId(), locationId);
+
+        List<StampResponseItem> stampResponseItems = stamps.stream()
+                .map(StampResponseItem::toDto).toList();
+
+        return StampResponseDto.toDto(stampResponseItems);
     }
 }
