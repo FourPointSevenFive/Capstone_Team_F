@@ -1,7 +1,6 @@
 package com.hallyugo.hallyugo.location.domain.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.hallyugo.hallyugo.image.domain.Image;
 import com.hallyugo.hallyugo.image.domain.response.ImageResponseDto;
 import com.hallyugo.hallyugo.location.domain.Location;
 import java.math.BigDecimal;
@@ -9,7 +8,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 import lombok.Getter;
 
 public class LocationWithImagesResponseDto {
@@ -48,7 +46,7 @@ public class LocationWithImagesResponseDto {
     @Getter
     private List<ImageResponseDto> images = new ArrayList<>();
 
-    private LocationWithImagesResponseDto(Location location, List<ImageResponseDto> imageResponseDtos) {
+    private LocationWithImagesResponseDto(Location location, List<ImageResponseDto> images) {
         this.id = location.getId();
         this.title = location.getTitle();
         this.latitude = location.getLatitude();
@@ -59,15 +57,11 @@ public class LocationWithImagesResponseDto {
         this.pose = location.getPose();
         this.createdAt = location.getCreatedAt();
         this.updatedAt = location.getUpdatedAt();
-        this.images = imageResponseDtos;
+        this.images = images;
     }
 
-    public static LocationWithImagesResponseDto toDto(Location location, List<Image> images) {
-        List<ImageResponseDto> imageResponseDtos = images.stream()
-                .map(ImageResponseDto::toDto)
-                .collect(Collectors.toList());
-
-        return new LocationWithImagesResponseDto(location, imageResponseDtos);
+    public static LocationWithImagesResponseDto toDto(Location location, List<ImageResponseDto> images) {
+        return new LocationWithImagesResponseDto(location, images);
     }
 
     @Override

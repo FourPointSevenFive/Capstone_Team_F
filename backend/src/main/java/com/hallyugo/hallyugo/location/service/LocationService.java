@@ -2,8 +2,9 @@ package com.hallyugo.hallyugo.location.service;
 
 import com.hallyugo.hallyugo.content.domain.Content;
 import com.hallyugo.hallyugo.content.repository.ContentRepository;
-import com.hallyugo.hallyugo.image.domain.Image;
+import com.hallyugo.hallyugo.image.domain.response.ImageResponseDto;
 import com.hallyugo.hallyugo.image.repository.ImageRepository;
+import com.hallyugo.hallyugo.image.service.ImageService;
 import com.hallyugo.hallyugo.location.domain.Location;
 import com.hallyugo.hallyugo.location.domain.response.LocationWithImagesResponseDto;
 import com.hallyugo.hallyugo.location.repository.LocationRepository;
@@ -18,16 +19,15 @@ public class LocationService {
     private final ContentRepository contentRepository;
     private final LocationRepository locationRepository;
     private final ImageRepository imageRepository;
+    private final ImageService imageService;
 
     public List<LocationWithImagesResponseDto> getLocationsWithImagesByContentId(Long contentId) {
-        List<LocationWithImagesResponseDto> locationsWithImages = locationRepository.findByContentId(contentId).stream()
+        return locationRepository.findByContentId(contentId).stream()
                 .map(location -> {
-                    List<Image> images = imageRepository.findByLocationId(location.getId());
+                    List<ImageResponseDto> images = imageService.getImagesByLocationId(location.getId());
                     return LocationWithImagesResponseDto.toDto(location, images);
                 })
-                .collect(Collectors.toList());
-
-        return locationsWithImages;
+                .toList();
     }
 
     public List<LocationWithImagesResponseDto> getLocationsWithImagesByKeyword(String keyword) {
@@ -38,7 +38,7 @@ public class LocationService {
         List<LocationWithImagesResponseDto> locationsWithImages = contents.stream()
                 .flatMap(content -> locationRepository.findByContentId(content.getId()).stream()
                         .map(location -> {
-                            List<Image> images = imageRepository.findByLocationId(location.getId());
+                            List<ImageResponseDto> images = imageService.getImagesByLocationId(location.getId());
                             return LocationWithImagesResponseDto.toDto(location, images);
                         }))
                 .collect(Collectors.toList());
@@ -46,7 +46,7 @@ public class LocationService {
         // Location title에 keyword가 포함된 경우
         locationsWithImages.addAll(locations.stream()
                 .map(location -> {
-                    List<Image> images = imageRepository.findByLocationId(location.getId());
+                    List<ImageResponseDto> images = imageService.getImagesByLocationId(location.getId());
                     return LocationWithImagesResponseDto.toDto(location, images);
                 }).collect(Collectors.toList()));
 
