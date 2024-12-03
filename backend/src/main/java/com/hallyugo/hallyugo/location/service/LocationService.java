@@ -19,6 +19,17 @@ public class LocationService {
     private final LocationRepository locationRepository;
     private final ImageRepository imageRepository;
 
+    public List<LocationWithImagesResponseDto> getLocationsWithImagesByContentId(Long contentId) {
+        List<LocationWithImagesResponseDto> locationsWithImages = locationRepository.findByContentId(contentId).stream()
+                .map(location -> {
+                    List<Image> images = imageRepository.findByLocationId(location.getId());
+                    return LocationWithImagesResponseDto.toDto(location, images);
+                })
+                .collect(Collectors.toList());
+
+        return locationsWithImages;
+    }
+
     public List<LocationWithImagesResponseDto> getLocationsWithImagesByKeyword(String keyword) {
         List<Content> contents = contentRepository.findByTitleContainingIgnoreCase(keyword);
         List<Location> locations = locationRepository.findByTitleContainingIgnoreCase(keyword);

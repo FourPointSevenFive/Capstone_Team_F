@@ -7,10 +7,8 @@ import com.hallyugo.hallyugo.content.domain.Content;
 import com.hallyugo.hallyugo.content.domain.response.ContentForMapResponseDto;
 import com.hallyugo.hallyugo.content.domain.response.ContentResponseDto;
 import com.hallyugo.hallyugo.content.repository.ContentRepository;
-import com.hallyugo.hallyugo.image.domain.Image;
-import com.hallyugo.hallyugo.image.repository.ImageRepository;
 import com.hallyugo.hallyugo.location.domain.response.LocationWithImagesResponseDto;
-import com.hallyugo.hallyugo.location.repository.LocationRepository;
+import com.hallyugo.hallyugo.location.service.LocationService;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,8 +24,7 @@ public class ContentService {
     private static final int PAGE_NUMBER = 0;
     private static final int INITIAL_CONTENTS_SIZE_PER_CATEGORY = 2;
     private final ContentRepository contentRepository;
-    private final LocationRepository locationRepository;
-    private final ImageRepository imageRepository;
+    private final LocationService locationService;
 
     public Map<String, List<ContentResponseDto>> getRandomContents() {
         Map<String, List<ContentResponseDto>> result = new HashMap<>();
@@ -60,12 +57,8 @@ public class ContentService {
         Content content = contentRepository.findById(contentId)
                 .orElseThrow(() -> new EntityNotFoundException(ExceptionCode.ENTITY_NOT_FOUND));
 
-        List<LocationWithImagesResponseDto> locationsWithImages = locationRepository.findByContentId(contentId).stream()
-                .map(location -> {
-                    List<Image> images = imageRepository.findByLocationId(location.getId());
-                    return LocationWithImagesResponseDto.toDto(location, images);
-                })
-                .collect(Collectors.toList());
+        List<LocationWithImagesResponseDto> locationsWithImages =
+                locationService.getLocationsWithImagesByContentId(contentId);
 
         return ContentForMapResponseDto.toDto(content, locationsWithImages);
     }
