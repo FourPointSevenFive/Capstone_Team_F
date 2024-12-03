@@ -60,4 +60,38 @@ public class ContentServiceBySqlTest {
         assertEquals(1, result.getFirst().getLocations().get(1).getImages().size());
         assertEquals(0, result.getFirst().getLocations().get(2).getImages().size());
     }
+
+    @DisplayName("키워드로 콘텐츠와 연관된 위치와 각 위치에 대한 이미지를 검색할 수 있어야 한다.")
+    @Test
+    void 키워드_콘텐츠_위치_이미지_리스트_검색_성공_테스트() {
+        // given
+        String keyword = "1";
+        int expectedContentDtoSize = 1;
+        int expectedLocationWithImagesDtoSize = 10;
+
+        // when
+        List<ContentForMapResponseDto> result = contentService.getContentsWithLocationsAndImagesByKeyword(keyword);
+
+        // then
+        assertEquals(expectedContentDtoSize, result.size());
+        assertEquals(expectedLocationWithImagesDtoSize, result.getFirst().getLocations().size());
+    }
+
+    @DisplayName("키워드로 콘텐츠와 연관된 위치와 각 위치에 대한 이미지를 검색할 수 있어야 한다.")
+    @Test
+    void 키워드_콘텐츠_위치_이미지_리스트_검색_성공_테스트2() {
+        // given
+        String keyword = "title";
+        int expectedContentDtoSize = 2;
+        int expectedLocationWithImagesDtoSize1 = 10;
+        int expectedLocationWithImagesDtoSize2 = 4;
+
+        // when
+        List<ContentForMapResponseDto> result = contentService.getContentsWithLocationsAndImagesByKeyword(keyword);
+
+        // then
+        assertEquals(expectedContentDtoSize, result.size());
+        assertEquals(expectedLocationWithImagesDtoSize1, result.getFirst().getLocations().size());
+        assertEquals(expectedLocationWithImagesDtoSize2, result.getLast().getLocations().size());
+    }
 }
