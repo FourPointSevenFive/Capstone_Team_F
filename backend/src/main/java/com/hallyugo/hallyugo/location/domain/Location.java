@@ -55,19 +55,23 @@ public class Location {
 
     private String pose;
 
+    @Column(name = "created_at")
     @CreatedDate
     private LocalDateTime createdAt;
 
+    @Column(name = "updated_at")
     @LastModifiedDate
     private LocalDateTime updatedAt;
 
-    public void setContent(Content content) {
-        if (this.content != null) {
-            this.content.getLocations().remove(this);
-        }
-
-        this.content = content;
-        content.getLocations().add(this);
+    public Location(String title, BigDecimal latitude, BigDecimal longitude, String description,
+                    String videoLink, Long favoriteCount, String pose) {
+        this.title = title;
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.description = description;
+        this.videoLink = videoLink;
+        this.favoriteCount = favoriteCount;
+        this.pose = pose;
     }
 
     public void increaseFavoriteCount() {
