@@ -36,11 +36,19 @@ public class ContentController {
         return ResponseEntity.ok(result);
     }
 
-    @GetMapping(value = "/location?content")
+    @GetMapping(value = "/location", params = "content_id")
     public ResponseEntity<ContentForMapResponseDto> getContentWithLocationsAndImages(
             @RequestParam(name = "content_id") Long contentId
     ) {
         ContentForMapResponseDto result = contentService.getContentWithLocationsAndImages(contentId);
+        return ResponseEntity.ok(result);
+    }
+
+    @GetMapping(value = "/location", params = "category")
+    public ResponseEntity<List<ContentForMapResponseDto>> getContentsWithLocationsAndImagesByCategory(
+            @RequestParam(name = "category") String category
+    ) {
+        List<ContentForMapResponseDto> result = contentService.getContentsWithLocationsAndImagesByCategory(category);
         return ResponseEntity.ok(result);
     }
 }
