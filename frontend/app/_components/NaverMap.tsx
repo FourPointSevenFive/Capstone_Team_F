@@ -12,7 +12,7 @@ export default function Map({ loc }: { loc: Coordinates }) {
   const initializeMap = useCallback(() => {
     const mapOptions = {
       center: new window.naver.maps.LatLng(loc),
-      zoom: 15,
+      zoom: 18,
       scaleControl: true,
       mapDataControl: true,
       logoControlOptions: {

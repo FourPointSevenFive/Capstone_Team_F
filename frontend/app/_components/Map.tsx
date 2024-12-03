@@ -10,12 +10,13 @@ export default function MapContainer() {
 
   const initLocation = () => {
     navigator.geolocation.getCurrentPosition((position) => {
+      console.log(position);
       setLoc([position.coords.longitude, position.coords.latitude]);
     });
   };
 
   useEffect(() => {
-    initLocation();
+    setLoc([127.011506, 37.283732]);
   }, []);
 
   return loc ? <Map loc={loc} /> : <MapSkeleton />;
