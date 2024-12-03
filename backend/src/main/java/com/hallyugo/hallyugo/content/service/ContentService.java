@@ -70,4 +70,13 @@ public class ContentService {
         return ContentForMapResponseDto.toDto(content, locationsWithImages);
     }
 
+    public List<ContentForMapResponseDto> getContentsWithLocationsAndImagesByCategory(String category) {
+        List<Content> contents = contentRepository.findByCategory(Category.valueOf(category));
+
+        List<ContentForMapResponseDto> contentDtos = contents.stream()
+                .map(content -> getContentWithLocationsAndImages(content.getId())).collect(Collectors.toList());
+
+        return contentDtos;
+    }
+
 }
