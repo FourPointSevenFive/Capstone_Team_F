@@ -5,6 +5,8 @@ import com.hallyugo.hallyugo.favorite.domain.response.FavoriteResponseDto;
 import com.hallyugo.hallyugo.favorite.service.FavoriteService;
 import com.hallyugo.hallyugo.user.domain.User;
 import lombok.RequiredArgsConstructor;
+import net.minidev.json.JSONObject;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -46,5 +48,23 @@ public class FavoriteController {
     ) {
         favoriteService.decreaseFavoriteCountAndDelete(user, locationId);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping(value = "favorite", params = "location_id")
+    public ResponseEntity<String> checkFavoriteClicked(
+            @AuthUser User user,
+            @RequestParam(name = "location_id") Long locationId
+    ) {
+        String result;
+        boolean isClicked = favoriteService.checkFavoriteClicked(user, locationId);
+
+        if (isClicked) {
+            result = new JSONObject().put("result", true).toString();
+        } else {
+            result = new JSONObject().put("result", false).toString();
+
+        }
+
+        return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(result);
     }
 }
