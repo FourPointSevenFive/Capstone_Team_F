@@ -2,7 +2,7 @@ package com.hallyugo.hallyugo.content.service;
 
 import com.hallyugo.hallyugo.content.domain.Category;
 import com.hallyugo.hallyugo.content.domain.Content;
-import com.hallyugo.hallyugo.content.domain.ContentResponseDto;
+import com.hallyugo.hallyugo.content.domain.response.ContentResponseDto;
 import com.hallyugo.hallyugo.content.repository.ContentRepository;
 import jakarta.transaction.Transactional;
 import java.util.ArrayList;
@@ -15,10 +15,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 
 @Transactional
@@ -28,9 +26,6 @@ class ContentServiceTest {
     private static final int CATEGORY_COUNT = 4;
     private static final int INITIAL_CONTENTS_SIZE_PER_CATEGORY = 2;
     private static final int TOTAL_CONTENTS_SIZE_PER_CATEGORY = 3;
-
-    @MockBean
-    private RedissonClient redissonClient;
 
     @Autowired
     private ContentRepository contentRepository;
@@ -115,4 +110,5 @@ class ContentServiceTest {
 
         return contentsByCategory;
     }
+
 }

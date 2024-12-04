@@ -1,6 +1,8 @@
-package com.hallyugo.hallyugo.content.domain;
+package com.hallyugo.hallyugo.content.domain.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.hallyugo.hallyugo.content.domain.Category;
+import com.hallyugo.hallyugo.content.domain.Content;
 
 public class ContentResponseDto {
 

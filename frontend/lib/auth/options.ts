@@ -12,7 +12,7 @@ export const options: NextAuthOptions = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
-        const res = await fetch("/api/v1/auth/login", {
+        const res = await fetch("http://hallyugo.com:8080/api/v1/auth/login", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(credentials),
@@ -20,8 +20,12 @@ export const options: NextAuthOptions = {
 
         const user = await res.json();
         if (res.ok && user) {
-          return user;
+          return {
+            ...user,
+            username: credentials?.username,
+          };
         }
+        console.error("Failed to log in: ", user);
         return null;
       },
     }),
@@ -30,6 +34,7 @@ export const options: NextAuthOptions = {
   session: {
     strategy: "jwt",
     maxAge: 24 * 60 * 60, // 24 hours
+    updateAge: 24 * 60 * 60, // 24 hours
   },
 
   callbacks: {
@@ -37,14 +42,18 @@ export const options: NextAuthOptions = {
       if (user) {
         token.accessToken = user.accessToken;
         token.refreshToken = user.refreshToken;
+        token.accessTokenExpires = user.exp;
+        token.refreshTokenExpires =
+          Number(user.exp) + 7 * 24 * 60 * 60 - 30 * 60;
+        // 7 days
       }
+
       return token;
     },
 
     async session({ session, token }: { session: Session; token: JWT }) {
       session.user = {
         username: token.username,
-        role: token.role,
       };
 
       session.token = {
@@ -52,6 +61,7 @@ export const options: NextAuthOptions = {
         refreshToken: token.refreshToken,
         accessTokenExpires: token.accessTokenExpires,
         refreshTokenExpires: token.refreshTokenExpires,
+        exp: token.exp,
       };
 
       return session;

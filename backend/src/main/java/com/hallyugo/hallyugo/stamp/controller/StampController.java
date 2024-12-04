@@ -26,4 +26,13 @@ public class StampController {
         StampResponseDto result = stampService.getStampsByUser(user, limit);
         return ResponseEntity.ok(result);
     }
+
+    @GetMapping("/stamp/location")
+    public ResponseEntity<StampResponseDto> getLocationStamp(
+            @AuthUser User user,
+            @RequestParam(name = "location_id") Long locationId
+    ) {
+        StampResponseDto result = stampService.getStampsByUserAndLocation(user, locationId);
+        return ResponseEntity.ok(result);
+    }
 }

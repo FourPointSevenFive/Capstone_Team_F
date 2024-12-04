@@ -1,21 +1,68 @@
+"use client";
+
 import Header from "@/app/_components/Header";
 import SearchBar from "../_components/SearchBar";
-import LocationCard from "./_components/LocationCard";
 import CustomBadge from "../_components/CustomBadge";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import {
-  Drawer,
-  DrawerContent,
-  DrawerHeader,
-  DrawerTitle,
-  DrawerTrigger,
-} from "@/components/ui/drawer";
-import { BsChevronDoubleUp } from "react-icons/bs";
-import MapContainer from "../_components/Map";
 import MapSkeleton from "../_components/MapSkeleton";
-import { Suspense } from "react";
+import { Suspense, useEffect } from "react";
+import SimpleMap from "../_components/NaverMap";
+import { clsx } from "clsx";
+import { useState } from "react";
+import { Drawer } from "vaul";
+import { fetcher } from "@/lib/utils";
+import { useSearchParams } from "next/navigation";
+import LocationCard from "./_components/LocationCard";
+
+interface LocationImage {
+  id: number;
+  image_url: string;
+  description: string;
+  created_at: string;
+}
+
+interface Location {
+  id: number;
+  title: string;
+  latitude: number;
+  longitude: number;
+  description: string;
+  video_link: string;
+  favorite_cnt: number;
+  pose: string;
+  created_at: string;
+  updated_at: string;
+  images: LocationImage[];
+}
+
+interface ApiResponse {
+  id: number;
+  category: string;
+  title: string;
+  hashtag: string;
+  locations: Location[];
+}
 
 export default function Page() {
+  const searchParams = useSearchParams().get("content_id");
+  const [locations, setLocations] = useState<ApiResponse>({
+    id: 0,
+    category: "",
+    title: "",
+    hashtag: "",
+    locations: [],
+  });
+
+  const getLocations = async () => {
+    const data: ApiResponse = await fetcher(
+      `api/v1/location?content_id=${searchParams}`,
+    ).json();
+    setLocations(data);
+  };
+
+  useEffect(() => {
+    getLocations();
+  }, []);
+
   return (
     <div className="flex flex-col gap-4">
       <Header />
@@ -24,73 +71,54 @@ export default function Page() {
         <SearchBar />
       </div>
       <Suspense fallback={<MapSkeleton />}>
-        <MapContainer />
+        <SimpleMap />
       </Suspense>
-
-      <div className="border-1 flex flex-col justify-center gap-3 rounded-2xl border border-neutral-100 p-2">
-        <CardList />
-        <LocationCard
-          title="Bongsuyuk"
-          photo="photohere"
-          description="mookup"
-          address="~~ "
-        />
-        <LocationCard
-          title="skku"
-          photo="photo"
-          description="blabla"
-          address="somewhere"
-        />
-      </div>
+      <VaulDrawer locations={locations.locations} />
     </div>
   );
 }
 
-function CardList() {
+const snapPoints = ["350px", "150px", 1];
+function VaulDrawer({ locations }: { locations: Location[] }) {
+  const [snap, setSnap] = useState<number | string | null>(snapPoints[0]);
+
   return (
-    <Drawer>
-      <DrawerTrigger className="self-center">
-        <BsChevronDoubleUp className="text-neutral-600" />
-      </DrawerTrigger>
-      <DrawerContent className="w-dvw justify-center">
-        <DrawerHeader>
-          <DrawerTitle>{}</DrawerTitle>
-        </DrawerHeader>
-        <ScrollArea>
-          <div className="flex h-[80vh] w-full flex-col gap-5 px-5 pb-4">
-            <LocationCard
-              title="skku"
-              photo="photo"
-              description="blabla"
-              address="somewhere"
-            />
-            <LocationCard
-              title="skku"
-              photo="photo"
-              description="blabla"
-              address="somewhere"
-            />
-            <LocationCard
-              title="skku"
-              photo="photo"
-              description="blabla"
-              address="somewhere"
-            />
-            <LocationCard
-              title="skku"
-              photo="photo"
-              description="blabla"
-              address="somewhere"
-            />
-            <LocationCard
-              title="skku"
-              photo="photo"
-              description="blabla"
-              address="somewhere"
-            />
+    <Drawer.Root
+      snapPoints={snapPoints}
+      activeSnapPoint={snap}
+      setActiveSnapPoint={setSnap}
+      modal={false}
+      defaultOpen={true}
+      dismissible={false}
+    >
+      <Drawer.Overlay className="fixed inset-0 bg-black/40" />
+      <Drawer.Portal>
+        <Drawer.Content
+          data-testid="content"
+          className="border-b-none fixed bottom-0 left-0 right-0 mx-[-1px] my-5 flex h-full max-h-[90%] w-[95%] flex-col place-self-center rounded-t-[10px] border border-gray-200 bg-white"
+        >
+          <Drawer.Title className="flex items-center justify-center py-5 font-medium text-gray-900">
+            <div className="mb-2 h-2 w-48 self-center rounded-xl bg-gray-200" />
+          </Drawer.Title>
+          <div
+            className={clsx(
+              "mx-auto flex w-full max-w-md flex-col items-center gap-10 p-4 pt-5",
+              {
+                "overflow-y-auto": snap === 1,
+                "overflow-hidden": snap !== 1,
+              },
+            )}
+          >
+            {locations?.map((location) => (
+              <LocationCard
+                key={location.id}
+                title={location.title}
+                description={location.description}
+              />
+            ))}
           </div>
-        </ScrollArea>
-      </DrawerContent>
-    </Drawer>
+        </Drawer.Content>
+      </Drawer.Portal>
+    </Drawer.Root>
   );
 }

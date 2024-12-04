@@ -8,6 +8,7 @@ interface Token {
   refreshToken: string;
   accessTokenExpires: number;
   refreshTokenExpires: number;
+  exp: number;
 }
 
 declare module "next-auth" {
