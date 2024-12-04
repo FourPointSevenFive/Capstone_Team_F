@@ -56,6 +56,9 @@ dependencies {
 
     // AWS
     implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
+
+    // JSON
+    implementation 'net.minidev:json-smart:2.4.7'
 }
 
 tasks.named('test') {
