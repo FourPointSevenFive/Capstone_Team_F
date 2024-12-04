@@ -55,16 +55,17 @@ public class FavoriteController {
             @AuthUser User user,
             @RequestParam(name = "location_id") Long locationId
     ) {
-        String result;
+        JSONObject result = new JSONObject();
         boolean isClicked = favoriteService.checkFavoriteClicked(user, locationId);
+        long total = favoriteService.getTotalFavoriteCountByLocation(locationId);
 
         if (isClicked) {
-            result = new JSONObject().put("result", true).toString();
+            result.put("result", true);
         } else {
-            result = new JSONObject().put("result", false).toString();
-
+            result.put("result", false);
         }
 
-        return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(result);
+        result.put("total", total);
+        return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(result.toString());
     }
 }
