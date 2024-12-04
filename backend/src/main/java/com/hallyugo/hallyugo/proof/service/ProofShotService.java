@@ -69,4 +69,17 @@ public class ProofShotService {
         String fileName = imageUrl.substring(imageUrl.lastIndexOf("/") + 1);
         s3Uploader.deleteFile(fileName);
     }
+
+    public ProofShotResponseDto getProofShot(Long locationId) {
+        List<ProofShot> proofShots = proofShotRepository.findByLocationId(locationId);
+
+        List<ProofShotResponseItem> proofShotResponseItems = proofShots.stream()
+                .map(ProofShotResponseItem::toDto)
+                .toList();
+
+        ProofShotResponseDto result = new ProofShotResponseDto();
+        result.setTotal(proofShots.size());
+        result.setProofShots(proofShotResponseItems);
+        return result;
+    }
 }

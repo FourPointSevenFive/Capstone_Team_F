@@ -17,12 +17,13 @@ import java.io.IOException;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/user")
+@RequestMapping("/api/v1")
 public class ProofController {
 
     private final ProofShotService proofShotService;
 
-    @GetMapping("/proof-shot")
+    // User
+    @GetMapping("/user/proof-shot")
     public ResponseEntity<ProofShotResponseDto> getUserProofShot(
             @AuthUser User user,
             @RequestParam(name = "limit", defaultValue = "9") int limit
@@ -31,7 +32,7 @@ public class ProofController {
         return ResponseEntity.ok(result);
     }
 
-    @PostMapping(value = "/proof-shot/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "/user/proof-shot/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ProofShotUploadResponseDto> uploadUserProofShot(
             @AuthUser User user,
             @RequestPart(value = "proof_shot")ProofShotRequestDto proofShot,
@@ -41,12 +42,21 @@ public class ProofController {
         return ResponseEntity.ok(result);
     }
 
-    @DeleteMapping("/proof-shot/delete/{id}")
+    @DeleteMapping("/user/proof-shot/delete/{id}")
     public ResponseEntity<?> deleteUserProofShot(
             @AuthUser User user,
             @PathVariable Long id
     ) {
         proofShotService.deleteProofShot(user, id);
         return ResponseEntity.ok(null);
+    }
+
+    // Common
+    @GetMapping("/proof-shot/location")
+    public ResponseEntity<ProofShotResponseDto> getLocationProofShot(
+            @RequestParam(name = "location_id") Long locationId
+    ) {
+        ProofShotResponseDto result = proofShotService.getProofShot(locationId);
+        return ResponseEntity.ok(result);
     }
 }

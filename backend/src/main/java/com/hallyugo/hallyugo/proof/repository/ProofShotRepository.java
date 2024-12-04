@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface ProofShotRepository extends JpaRepository<ProofShot, Long> {
     List<ProofShot> findByUserId(Long userId);
+    List<ProofShot> findByLocationId(Long locationId);
 }
