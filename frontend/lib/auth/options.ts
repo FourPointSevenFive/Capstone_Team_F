@@ -1,4 +1,3 @@
-import { randomBytes, randomUUID } from "crypto";
 import type { NextAuthOptions, Session, User } from "next-auth";
 import { JWT } from "next-auth/jwt";
 import CredentialsProvider from "next-auth/providers/credentials";
@@ -36,9 +35,6 @@ export const options: NextAuthOptions = {
     strategy: "jwt",
     maxAge: 24 * 60 * 60, // 24 hours
     updateAge: 24 * 60 * 60, // 24 hours
-    generateSessionToken: () => {
-      return randomUUID?.() ?? randomBytes(32).toString("hex");
-    },
   },
 
   callbacks: {
@@ -46,7 +42,12 @@ export const options: NextAuthOptions = {
       if (user) {
         token.accessToken = user.accessToken;
         token.refreshToken = user.refreshToken;
+        token.accessTokenExpires = user.exp;
+        token.refreshTokenExpires =
+          Number(user.exp) + 7 * 24 * 60 * 60 - 30 * 60;
+        // 7 days
       }
+
       return token;
     },
 
@@ -60,6 +61,7 @@ export const options: NextAuthOptions = {
         refreshToken: token.refreshToken,
         accessTokenExpires: token.accessTokenExpires,
         refreshTokenExpires: token.refreshTokenExpires,
+        exp: token.exp,
       };
 
       return session;

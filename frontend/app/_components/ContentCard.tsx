@@ -2,11 +2,13 @@ import Image from "next/image";
 import Link from "next/link";
 
 export default function ContentCard({
+  id,
   title,
   description,
   image,
   hashtags,
 }: {
+  id: number;
   title: string;
   description: string;
   image: string;
@@ -14,7 +16,7 @@ export default function ContentCard({
   hashtags?: string;
 }) {
   return (
-    <Link href={"./"}>
+    <Link href={`./map?content_id=${id}`}>
       <div className="flex justify-between rounded-2xl border-2 border-neutral-100 p-4">
         <div className="flex w-56 flex-col gap-4">
           <p className="text-sm font-bold text-gray-700">{title}</p>

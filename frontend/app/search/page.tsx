@@ -63,6 +63,7 @@ export default function SeeMore() {
             {content ? (
               data.map((content) => (
                 <ContentCard
+                  id={content.id}
                   key={content.id}
                   title={content.title}
                   description={content.description}
