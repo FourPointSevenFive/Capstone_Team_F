@@ -50,7 +50,7 @@ public class FavoriteController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping(value = "favorite", params = "location_id")
+    @GetMapping(value = "/favorite", params = "location_id")
     public ResponseEntity<String> checkFavoriteClicked(
             @AuthUser User user,
             @RequestParam(name = "location_id") Long locationId
