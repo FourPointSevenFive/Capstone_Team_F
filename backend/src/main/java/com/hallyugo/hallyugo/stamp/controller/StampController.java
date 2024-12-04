@@ -7,6 +7,7 @@ import com.hallyugo.hallyugo.user.domain.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -34,5 +35,18 @@ public class StampController {
     ) {
         StampResponseDto result = stampService.getStampsByUserAndLocation(user, locationId);
         return ResponseEntity.ok(result);
+    }
+
+    @PostMapping(value = "/stamp/location", params = "location_id")
+    public ResponseEntity<Void> createLocationStamp(
+            @AuthUser User user,
+            @RequestParam(name = "location_id") Long locationId
+    ) {
+        try {
+            stampService.addLocationStamp(user, locationId);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
+        }
     }
 }
