@@ -5,13 +5,20 @@ import SearchBar from "../_components/SearchBar";
 import CustomBadge from "../_components/CustomBadge";
 import MapSkeleton from "../_components/MapSkeleton";
 import { Suspense, useEffect } from "react";
-import SimpleMap from "../_components/NaverMap";
+import MapWithMarker from "../_components/NaverMap";
 import { clsx } from "clsx";
 import { useState } from "react";
 import { Drawer } from "vaul";
 import { fetcher } from "@/lib/utils";
 import { useSearchParams } from "next/navigation";
 import LocationCard from "./_components/LocationCard";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface LocationImage {
   id: number;
@@ -32,11 +39,12 @@ interface Location {
   created_at: string;
   updated_at: string;
   images: LocationImage[];
+  category: "K_POP" | "DRAMA" | "MOVIE" | "NOVEL";
 }
 
 interface ApiResponse {
   id: number;
-  category: string;
+  category: "K_POP" | "DRAMA" | "MOVIE" | "NOVEL";
   title: string;
   hashtag: string;
   locations: Location[];
@@ -44,13 +52,18 @@ interface ApiResponse {
 
 export default function Page() {
   const searchParams = useSearchParams().get("content_id");
+  const [category, setCategory] = useState<string>("K_POP");
   const [locations, setLocations] = useState<ApiResponse>({
     id: 0,
-    category: "",
+    category: "K_POP",
     title: "",
     hashtag: "",
     locations: [],
   });
+
+  const [currentLocationId, setCurrentLocationId] = useState<number | null>(
+    null,
+  );
 
   const getLocations = async () => {
     const data: ApiResponse = await fetcher(
@@ -59,28 +72,67 @@ export default function Page() {
     setLocations(data);
   };
 
+  const getLocationsByCategory = async (category: string) => {
+    const data: ApiResponse[] = await fetcher(
+      `api/v1/location?category=${category}`,
+    ).json();
+    const categoryData = data.flatMap((response) => response.locations);
+    setLocations((prevState) => ({
+      ...prevState,
+      locations: categoryData,
+      category: category as "K_POP" | "DRAMA" | "MOVIE" | "NOVEL",
+    })); // 위치 데이터를 업데이트
+  };
   useEffect(() => {
-    getLocations();
-  }, []);
+    if (searchParams) {
+      getLocations();
+    } else {
+      getLocationsByCategory(category);
+      console.log("locations", locations);
+    }
+  }, [category, searchParams]);
 
   return (
     <div className="flex flex-col gap-4">
       <Header />
-      <div className="flex justify-between">
-        <CustomBadge title="BTS" category="kpop" />
+      <div className="flex items-center justify-between gap-2">
+        {searchParams ? (
+          <CustomBadge title={locations.title} category={locations.category} />
+        ) : (
+          <CategorySelect onSelect={(category) => setCategory(category)} />
+        )}
         <SearchBar />
       </div>
       <Suspense fallback={<MapSkeleton />}>
-        <SimpleMap />
+        <MapWithMarker
+          locations={locations.locations}
+          category={locations.category}
+          setCurrentLocationId={setCurrentLocationId}
+        />
       </Suspense>
-      <VaulDrawer locations={locations.locations} />
+      <VaulDrawer
+        locations={locations.locations}
+        currentLocationId={currentLocationId}
+      />
     </div>
   );
 }
 
 const snapPoints = ["350px", "150px", 1];
-function VaulDrawer({ locations }: { locations: Location[] }) {
+function VaulDrawer({
+  locations,
+  currentLocationId,
+}: {
+  locations: Location[];
+  currentLocationId: number | null;
+}) {
   const [snap, setSnap] = useState<number | string | null>(snapPoints[0]);
+  const rearrangedLocations = currentLocationId
+    ? [
+        ...locations.filter((location) => location.id === currentLocationId),
+        ...locations.filter((location) => location.id !== currentLocationId),
+      ]
+    : locations;
 
   return (
     <Drawer.Root
@@ -102,14 +154,14 @@ function VaulDrawer({ locations }: { locations: Location[] }) {
           </Drawer.Title>
           <div
             className={clsx(
-              "mx-auto flex w-full max-w-md flex-col items-center gap-10 p-4 pt-5",
+              "mx-auto flex w-full max-w-md flex-col items-center gap-16 p-4 pt-5",
               {
                 "overflow-y-auto": snap === 1,
                 "overflow-hidden": snap !== 1,
               },
             )}
           >
-            {locations?.map((location) => (
+            {rearrangedLocations.map((location) => (
               <LocationCard
                 key={location.id}
                 title={location.title}
@@ -122,3 +174,23 @@ function VaulDrawer({ locations }: { locations: Location[] }) {
     </Drawer.Root>
   );
 }
+
+const CategorySelect = ({
+  onSelect,
+}: {
+  onSelect: (category: string) => void;
+}) => {
+  return (
+    <Select onValueChange={onSelect}>
+      <SelectTrigger className="w-[100px]">
+        <SelectValue defaultValue="K_POP" placeholder="K Pop" />
+      </SelectTrigger>
+      <SelectContent>
+        <SelectItem value="K_POP">K Pop</SelectItem>
+        <SelectItem value="DRAMA">DRAMA</SelectItem>
+        <SelectItem value="MOVIE">MOVIE</SelectItem>
+        <SelectItem value="NOVEL">NOVEL</SelectItem>
+      </SelectContent>
+    </Select>
+  );
+};
