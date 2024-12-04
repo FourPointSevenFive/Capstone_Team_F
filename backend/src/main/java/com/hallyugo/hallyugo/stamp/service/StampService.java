@@ -1,10 +1,15 @@
 package com.hallyugo.hallyugo.stamp.service;
 
+import com.hallyugo.hallyugo.common.exception.EntityNotFoundException;
+import com.hallyugo.hallyugo.common.exception.ExceptionCode;
+import com.hallyugo.hallyugo.location.domain.Location;
+import com.hallyugo.hallyugo.location.repository.LocationRepository;
 import com.hallyugo.hallyugo.stamp.domain.Stamp;
 import com.hallyugo.hallyugo.stamp.domain.response.StampResponseDto;
 import com.hallyugo.hallyugo.stamp.domain.response.StampResponseItem;
 import com.hallyugo.hallyugo.stamp.repository.StampRepository;
 import com.hallyugo.hallyugo.user.domain.User;
+import jakarta.transaction.Transactional;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -14,6 +19,7 @@ import org.springframework.stereotype.Service;
 public class StampService {
 
     private final StampRepository stampRepository;
+    private final LocationRepository locationRepository;
 
     public StampResponseDto getStampsByUser(User user, int limit) {
         List<Stamp> stamps = stampRepository.findByUserId(user.getId());
@@ -37,5 +43,15 @@ public class StampService {
                 .map(StampResponseItem::toDto).toList();
 
         return StampResponseDto.toDto(stampResponseItems);
+    }
+
+    @Transactional
+    public void addLocationStamp(User user, Long locationId) {
+        Location location = locationRepository.findById(locationId)
+                .orElseThrow(() -> new EntityNotFoundException(
+                ExceptionCode.ENTITY_NOT_FOUND));
+
+        Stamp stamp = new Stamp(user, location);
+        stampRepository.save(stamp);
     }
 }
