@@ -30,19 +30,19 @@ public class FavoriteController {
         return ResponseEntity.ok(result);
     }
 
-    @PostMapping("/favorite/on?location_id={locationId}")
+    @PostMapping(value = "/favorite/on", params = "location_id")
     public ResponseEntity<Void> increaseFavoriteCount(
             @AuthUser User user,
-            @PathVariable Long locationId
+            @RequestParam(name = "location_id") Long locationId
     ) {
         favoriteService.increaseFavoriteCountAndSave(user, locationId);
         return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping("/favorite/off?location_id={locationId}")
+    @DeleteMapping(value = "/favorite/off", params = "location_id")
     public ResponseEntity<Void> decreaseFavoriteCount(
             @AuthUser User user,
-            @PathVariable Long locationId
+            @RequestParam(name = "location_id") Long locationId
     ) {
         favoriteService.decreaseFavoriteCountAndDelete(user, locationId);
         return ResponseEntity.ok().build();
