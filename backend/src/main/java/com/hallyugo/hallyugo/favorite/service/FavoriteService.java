@@ -104,4 +104,8 @@ public class FavoriteService {
     public boolean checkFavoriteClicked(User user, Long locationId) {
         return favoriteRepository.existsByUserIdAndLocationId(user.getId(), locationId);
     }
+
+    public long getTotalFavoriteCountByLocation(Long locationId) {
+        return favoriteRepository.countByLocationId(locationId);
+    }
 }
