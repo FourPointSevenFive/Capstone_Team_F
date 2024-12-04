@@ -36,6 +36,7 @@ export default async function Home() {
         <ContentsBox title="K-Pop">
           {data.K_POP?.map((content) => (
             <ContentCard
+              id={content.id}
               key={content.id}
               title={content.title}
               description={content.description}
@@ -48,6 +49,7 @@ export default async function Home() {
         <ContentsBox title="Drama">
           {data.DRAMA?.map((content) => (
             <ContentCard
+              id={content.id}
               key={content.id}
               title={content.title}
               description={content.description}
@@ -60,6 +62,7 @@ export default async function Home() {
         <ContentsBox title="Movie">
           {data.MOVIE?.map((content) => (
             <ContentCard
+              id={content.id}
               key={content.id}
               title={content.title}
               description={content.description}
@@ -72,6 +75,7 @@ export default async function Home() {
         <ContentsBox title="Novel">
           {data.NOVEL?.map((content) => (
             <ContentCard
+              id={content.id}
               key={content.id}
               title={content.title}
               description={content.description}

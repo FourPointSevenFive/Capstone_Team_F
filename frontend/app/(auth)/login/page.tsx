@@ -20,7 +20,6 @@ export default function SignInPage() {
         password,
       });
 
-      console.log("res: ", res);
       if (res && !res.error) {
         console.log("Signed in: ", res);
         window.location.href = "/";

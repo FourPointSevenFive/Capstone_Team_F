@@ -1,37 +1,30 @@
 "use client";
 
-import Script from "next/script";
-import { Coordinates, NaverMap } from "@/app/types/naverMaps";
-import { useCallback, useRef } from "react";
+import {
+  Container as MapDiv,
+  NaverMap,
+  Marker,
+  useNavermaps,
+} from "react-naver-maps";
 
-const mapId = "naver-map";
-
-export default function Map({ loc }: { loc: Coordinates }) {
-  const mapRef = useRef<NaverMap>();
-
-  const initializeMap = useCallback(() => {
-    const mapOptions = {
-      center: new window.naver.maps.LatLng(loc),
-      zoom: 18,
-      scaleControl: true,
-      mapDataControl: true,
-      logoControlOptions: {
-        position: naver.maps.Position.BOTTOM_LEFT,
-      },
-    };
-    const map = new window.naver.maps.Map(mapId, mapOptions);
-    mapRef.current = map;
-  }, [loc]);
+function MyMap() {
+  // instead of window.naver.maps
+  const navermaps = useNavermaps();
 
   return (
-    <>
-      <Script
-        strategy="afterInteractive"
-        type="text/javascript"
-        src={`https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=${process.env.NEXT_PUBLIC_MAP_CLIENT_ID}`}
-        onReady={initializeMap}
-      ></Script>
-      <div id={mapId} className="size-96 self-center" />
-    </>
+    <NaverMap
+      defaultCenter={new navermaps.LatLng(37.3595704, 127.105399)}
+      defaultZoom={15}
+    >
+      <Marker defaultPosition={new navermaps.LatLng(37.3595704, 127.105399)} />
+    </NaverMap>
+  );
+}
+
+export default function SimpleMap() {
+  return (
+    <MapDiv style={{ width: "100%", height: "300px" }}>
+      <MyMap />
+    </MapDiv>
   );
 }

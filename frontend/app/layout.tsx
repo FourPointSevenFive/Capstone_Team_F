@@ -3,6 +3,7 @@ import localFont from "next/font/local";
 import "./globals.css";
 import Script from "next/script";
 import AuthProvider from "./_components/AuthProvider";
+import { NavermapsProvider } from "react-naver-maps";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -38,6 +39,7 @@ export default function RootLayout({
         type="text/javascript"
         src={`https://oapi.map.naver.com/openapi/v3/maps.js?ncpClientId=${process.env.NEXT_PUBLIC_MAP_CLIENT_ID}&submodules=geocoder`}
       />
+
       <body
         className={`${geistSans.variable} ${geistMono.variable} w-dvw px-8 py-5 antialiased`}
       >

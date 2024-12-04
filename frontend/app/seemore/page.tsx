@@ -65,6 +65,7 @@ export default function SeeMore() {
         <div className="flex flex-col gap-5">
           {data.map((content) => (
             <ContentCard
+              id={content.id}
               key={content.id}
               title={content.title}
               description={content.description}

@@ -45,7 +45,6 @@ export default function Page() {
             </Button>
           </div>
 
-          <MapContainer />
           <div className="flex flex-col gap-20">
             <MyList />
             <MyProofShot />
@@ -108,7 +107,6 @@ const MyProofShot = () => {
         .json();
       setProofshots(data.proof_shoots);
       setTotal(data.total);
-      console.log(data);
     } catch (error) {
       console.error("Failed to fetch proof shots:", error);
     }
@@ -160,7 +158,6 @@ const MyStamps = () => {
       const data: Stamp = await fetcherWithAuth.get(`api/v1/user/stamp`).json();
       setStamps(data.stamps);
       setTotal(data.total);
-      console.log(data);
     } catch (error) {
       console.error("Failed to fetch stamps:", error);
     }
