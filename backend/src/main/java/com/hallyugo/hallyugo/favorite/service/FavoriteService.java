@@ -100,4 +100,8 @@ public class FavoriteService {
             favoriteRepository.deleteByUserIdAndLocationId(user.getId(), locationId);
         }
     }
+
+    public boolean checkFavoriteClicked(User user, Long locationId) {
+        return favoriteRepository.existsByUserIdAndLocationId(user.getId(), locationId);
+    }
 }
