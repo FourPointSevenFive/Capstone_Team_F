@@ -14,7 +14,6 @@ interface Location {
   title: string;
   latitude: number;
   longitude: number;
-  category: Category;
 }
 
 function MyMap({

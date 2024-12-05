@@ -39,7 +39,6 @@ interface Location {
   created_at: string;
   updated_at: string;
   images: LocationImage[];
-  category: "K_POP" | "DRAMA" | "MOVIE" | "NOVEL";
 }
 
 interface ApiResponse {
@@ -88,7 +87,6 @@ export default function Page() {
       getLocations();
     } else {
       getLocationsByCategory(category);
-      console.log("locations", locations);
     }
   }, [category, searchParams]);
 
@@ -162,11 +160,7 @@ function VaulDrawer({
             )}
           >
             {rearrangedLocations.map((location) => (
-              <LocationCard
-                key={location.id}
-                title={location.title}
-                description={location.description}
-              />
+              <LocationCard locationinfo={location} key={location.id} />
             ))}
           </div>
         </Drawer.Content>
