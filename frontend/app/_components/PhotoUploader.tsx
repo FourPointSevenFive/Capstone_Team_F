@@ -62,7 +62,6 @@ const PhotoUploader = ({ locationId }: { locationId?: number }) => {
         );
       }
 
-      const result = await response.json();
       //console.log("Upload successful:", result);
       alert("Upload successful!");
       setIsModalOpen(false); // 업로드 성공 시 모달 닫기

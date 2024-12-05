@@ -3,7 +3,7 @@
 import { fetcher } from "@/lib/utils";
 import ContentCard from "../_components/ContentCard";
 import { useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import Header from "../_components/Header";
 import { Skeleton } from "@/components/ui/skeleton";
 import SearchBar from "../_components/SearchBar";
@@ -24,7 +24,7 @@ const getData = async (content: string) => {
   return data;
 };
 
-export default function SeeMore() {
+function SeeMore() {
   // next/navigation에서 useSearchParams 훅 사용
   const searchParams = useSearchParams();
   const content = searchParams.get("keyword");
@@ -79,5 +79,13 @@ export default function SeeMore() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function Page() {
+  return (
+    <Suspense>
+      <SeeMore />
+    </Suspense>
   );
 }
