@@ -80,11 +80,11 @@ const PhotoUploader = ({ locationId }: { locationId?: number }) => {
     <div className="flex flex-col items-center">
       {/* 클릭 트리거 */}
       <div
-        className="flex cursor-pointer items-center justify-center gap-1 rounded-md bg-neutral-200 p-4 hover:bg-neutral-300"
+        className="flex cursor-pointer items-center justify-center gap-1 rounded-xl border border-blue-300 p-1 hover:bg-neutral-300"
         onClick={handleClick}
       >
-        <p className="text-sm font-bold text-neutral-500">ADD</p>
-        <MdAddToPhotos size={24} className="text-neutral-500" />
+        <p className="text-sm font-bold text-blue-500">ADD</p>
+        <MdAddToPhotos size={15} className="text-blue-500" />
       </div>
 
       {/* 숨겨진 파일 입력 */}

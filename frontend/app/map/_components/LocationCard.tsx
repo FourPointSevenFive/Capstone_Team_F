@@ -72,12 +72,15 @@ export default function LocationCard({
     return data;
   };
 
+  const [favoriteCnt, setFavoriteCnt] = useState(locationinfo.favorite_cnt);
+
   useEffect(() => {
     if (status !== "authenticated") return;
     getIsfavorite().then((data) => {
       //console.log(data);
       const favoriteData = data as IsFavoriteProps;
       setIsFavorite(favoriteData.result);
+      setFavoriteCnt(favoriteData.total);
     });
   }, []);
 
@@ -97,8 +100,10 @@ export default function LocationCard({
     setIsFavorite(!isFavorite);
 
     if (!isFavorite) {
+      setFavoriteCnt(favoriteCnt ? favoriteCnt + 1 : 1);
       postFavoriteOn();
     } else {
+      setFavoriteCnt(favoriteCnt ? favoriteCnt - 1 : 0);
       postFavoriteOff();
     }
   };
@@ -110,12 +115,16 @@ export default function LocationCard({
         <div className="w-64 text-sm font-bold">{locationinfo.title}</div>
         <div>
           {status === "authenticated" && (
-            <FaHeart
-              className={
-                cn("size-6") + (isFavorite ? " text-red-500" : " text-gray-500")
-              }
-              onClick={handleFavoriteClick}
-            />
+            <div className="flex flex-col items-center">
+              <FaHeart
+                className={
+                  cn("size-6") +
+                  (isFavorite ? " text-red-500" : " text-gray-500")
+                }
+                onClick={handleFavoriteClick}
+              />
+              <p className="text-sm text-neutral-500">{favoriteCnt}</p>
+            </div>
           )}
         </div>
       </div>

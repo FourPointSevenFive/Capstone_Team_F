@@ -72,8 +72,8 @@ function StampSection() {
       const distance = calculateDistance(
         latitude,
         longitude,
-        37.555778909,
-        127.023026145,
+        loc?.latitude ?? 0,
+        loc?.longitude ?? 0,
       );
 
       // 1km 이하일 경우 GPS 활성화
@@ -215,6 +215,8 @@ function ProofShoots({ locationId }: { locationId: number | undefined }) {
       console.error("Failed to fetch proof shots:", error);
     }
   };
+
+  //photouploader가 바뀔 경우 useEffect 실행
 
   useEffect(() => {
     getProofShots();
