@@ -75,7 +75,7 @@ export default function LocationCard({
   useEffect(() => {
     if (status !== "authenticated") return;
     getIsfavorite().then((data) => {
-      console.log(data);
+      //console.log(data);
       const favoriteData = data as IsFavoriteProps;
       setIsFavorite(favoriteData.result);
     });

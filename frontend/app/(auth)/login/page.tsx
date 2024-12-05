@@ -21,7 +21,7 @@ export default function SignInPage() {
       });
 
       if (res && !res.error) {
-        console.log("Signed in: ", res);
+        //console.log("Signed in: ", res);
         window.location.href = "/";
       } else {
         setError("Failed to sign in. Please check your credentials.");
