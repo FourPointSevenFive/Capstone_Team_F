@@ -37,13 +37,12 @@ export default function RootLayout({
     <html lang="en" className={`${pretendard.variable}`}>
       <Script
         type="text/javascript"
-        src={`https://oapi.map.naver.com/openapi/v3/maps.js?ncpClientId=${process.env.NEXT_PUBLIC_MAP_CLIENT_ID}&submodules=geocoder`}
+        src={`https://oapi.map.naver.com/openapi/v3/maps.js?ncpClientId=${process.env.NEXT_PUBLIC_MAP_CLIENT_ID}&submodules=geocoder&language=en`}
       />
-
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} w-dvw px-8 py-5 antialiased`}
-      >
-        <AuthProvider>{children}</AuthProvider>
+      <body className={`${geistSans.variable} ${geistMono.variable} `}>
+        <div className="w-dvw bg-background px-8 py-5 antialiased">
+          <AuthProvider>{children}</AuthProvider>
+        </div>
       </body>
     </html>
   );

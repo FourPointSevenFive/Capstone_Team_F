@@ -1,36 +1,80 @@
-import React, { useRef } from "react";
+import { fetcherWithAuth } from "@/lib/utils";
+import React, { useRef, useState } from "react";
 import { MdAddToPhotos } from "react-icons/md";
 
-const PhotoUploader = () => {
+const PhotoUploader = ({ locationId }: { locationId?: number }) => {
   const inputRef = useRef<HTMLInputElement | null>(null);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
   const handleClick = () => {
     inputRef.current?.click();
   };
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const files = event.target.files;
-    const gallery = document.getElementById("photoGallery");
+    const file = event.target.files?.[0];
 
-    if (gallery) gallery.innerHTML = ""; // 기존 사진 초기화
-
-    if (files) {
-      Array.from(files).forEach((file) => {
-        if (file.type.startsWith("image/")) {
-          const reader = new FileReader();
-          reader.onload = (e) => {
-            const img = document.createElement("img");
-            img.src = e.target?.result as string;
-            img.style.width = "150px";
-            img.style.margin = "10px";
-            img.style.borderRadius = "8px";
-            img.style.boxShadow = "0 4px 6px rgba(0, 0, 0, 0.1)";
-            if (gallery) gallery.appendChild(img);
-          };
-          reader.readAsDataURL(file);
-        }
-      });
+    if (file) {
+      setSelectedFile(file);
+      setIsModalOpen(true); // 파일을 선택하면 모달을 엽니다.
     }
+  };
+
+  const handleUpload = async () => {
+    if (!selectedFile) {
+      alert("Please select a file to upload.");
+      return;
+    }
+
+    if (!locationId) {
+      alert("Please provide a location ID.");
+      return;
+    }
+
+    const formData = new FormData();
+
+    // ProofShotRequestDto를 JSON으로 변환하여 추가
+    const proofShotRequestDto = {
+      location_id: locationId,
+      description: ".",
+    };
+
+    try {
+      // JSON 데이터를 Blob으로 추가하면서 Content-Type을 명시합니다.
+      const proofShotBlob = new Blob([JSON.stringify(proofShotRequestDto)], {
+        type: "application/json",
+      });
+      formData.append("proof_shot", proofShotBlob);
+      formData.append("image", selectedFile);
+
+      const response = await fetcherWithAuth.post(
+        "api/v1/user/proof-shot/upload",
+        {
+          body: formData,
+        },
+      );
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        //console.error("Server Response:", response.status, errorText);
+        throw new Error(
+          `Failed to upload photo: ${response.status} ${errorText}`,
+        );
+      }
+
+      const result = await response.json();
+      //console.log("Upload successful:", result);
+      alert("Upload successful!");
+      setIsModalOpen(false); // 업로드 성공 시 모달 닫기
+    } catch (error) {
+      console.error("Error uploading file:", error);
+      alert("Error uploading file. Please try again.");
+    }
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setSelectedFile(null);
   };
 
   return (
@@ -49,17 +93,45 @@ const PhotoUploader = () => {
         ref={inputRef}
         type="file"
         accept="image/*"
-        name="proofshot"
-        multiple
         className="hidden"
         onChange={handleFileChange}
       />
 
-      {/* 갤러리 */}
-      <div
-        id="photoGallery"
-        className="mt-4 flex flex-wrap justify-center gap-4"
-      ></div>
+      {/* 모달 */}
+      {isModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="w-[90%] max-w-md rounded-lg bg-white p-6 shadow-lg">
+            <h2 className="mb-4 text-lg font-semibold">Upload Photo</h2>
+            <div id="photoGallery" className="mb-4 flex justify-center">
+              {selectedFile && (
+                <img
+                  src={URL.createObjectURL(selectedFile)}
+                  alt="Selected preview"
+                  style={{
+                    width: "150px",
+                    borderRadius: "8px",
+                    boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
+                  }}
+                />
+              )}
+            </div>
+            <div className="flex justify-end gap-4">
+              <button
+                className="rounded-md bg-gray-300 px-4 py-2 text-gray-700 hover:bg-gray-400"
+                onClick={handleCloseModal}
+              >
+                Cancel
+              </button>
+              <button
+                className="rounded-md bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
+                onClick={handleUpload}
+              >
+                Upload
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

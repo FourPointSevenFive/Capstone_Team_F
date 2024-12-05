@@ -1,6 +1,6 @@
 "use client";
 import Header from "../_components/Header";
-import MapContainer from "../_components/Map";
+
 import LocationCard from "../map/_components/LocationCard";
 import Stamp from "./_components/Stamp";
 //import CustomBadge from "../_components/CustomBadge";
@@ -20,64 +20,107 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { NaverMap } from "react-naver-maps";
+import MapWithMarker from "../_components/NaverMap";
+
+const getFavoriteLocations = async () => {
+  const data: FavoriteApiResponse = (await fetcherWithAuth
+    .get("api/v1/user/favorite?limit=50")
+    .json()) as FavoriteApiResponse;
+  return data;
+};
+
+interface FavoriteApiResponse {
+  total: number;
+  favorites: FavoriteProps[];
+}
+
+interface FavoriteProps {
+  id: number;
+  location_id: number;
+  title: string;
+  description: string;
+  image: string;
+  created_at: string;
+}
 
 export default function Page() {
   const { data: session, status } = useSession();
+  //console.log(session);
+  const [countCategory, setCountCategory] = useState({
+    K_POP: 0,
+    DRAMA: 0,
+    MOVIE: 0,
+    NOVEL: 0,
+  });
+
+  if (status === "unauthenticated") {
+    return <RedirectModal />;
+  }
 
   return (
     <>
-      {status === "unauthenticated" ? (
-        <RedirectModal />
-      ) : (
-        <div className="flex flex-col">
-          <div className="flex flex-col justify-between">
-            <Header />
-          </div>
-          <div className="mb-4 flex w-full items-center justify-between">
-            <p className="text-xl font-bold">My Page</p>
-            <Button
-              variant="ghost"
-              className="self-end p-0"
-              onClick={() => signOut()}
-            >
-              <CiLogout />
-              Log out
-            </Button>
-          </div>
-
-          <div className="flex flex-col gap-20">
-            <MyList />
-            <MyProofShot />
-            <MyStamps />
-            <MyStats />
-          </div>
+      <div className="flex flex-col">
+        <div className="flex flex-col justify-between">
+          <Header />
         </div>
-      )}
+        <div className="flex items-center justify-between">
+          <p className="w-fit self-center border-b-2 border-blue-100 p-1 text-xl font-bold">
+            All Of Your Memories
+          </p>
+          <Button
+            variant="ghost"
+            className="self-end p-0"
+            onClick={() => signOut()}
+          >
+            <CiLogout />
+            Log out
+          </Button>
+        </div>
+
+        <div className="flex flex-col gap-20">
+          <MyList />
+          <MyProofShot />
+          <MyStamps setCountCategory={setCountCategory} />
+          <MyStats countCategory={countCategory} />
+        </div>
+      </div>
     </>
   );
 }
 
 const MyList = () => {
-  const total = 91; // TODO: fetch from API
+  const [total, setTotal] = useState(0);
+  const [favorites, setFavorites] = useState<FavoriteApiResponse["favorites"]>(
+    [],
+  );
+
+  const getFavorites = async () => {
+    try {
+      const data: FavoriteApiResponse = await getFavoriteLocations();
+      setFavorites(data.favorites);
+      setTotal(data.total);
+    } catch (error) {
+      console.error("Failed to fetch favorites:", error);
+    }
+  };
+
+  useEffect(() => {
+    getFavorites();
+  }, []);
+
   return (
     <div className="pt-10">
-      <div className="flex flex-col gap-2 pb-8 pl-1 pr-1">
-        <Title title="My List" total={total} />
-        <MyListModal />
+      <div className="flex flex-col gap-2 pb-2 pl-1 pr-1">
+        <Title title="My List 💕 " total={total} />
+        <MyListModal favoriteList={favorites} />
       </div>
-      <div className="flex flex-col gap-3 rounded-xl border border-neutral-100 p-4">
-        <LocationCard
-          title="Bongsuyuk"
-          photo="photohere"
-          description="Jungkook’s favorite restaurant. They serve boiled pork and pork nabe.Be aware, there’s usually a wait!"
-          address="39-16, Ingye-ro 94beon-gil, Paldal-gu, Suwon-si, Gyeonggi-do"
-        />
-        <LocationCard
-          title="skku"
-          photo="photo"
-          description="blabla"
-          address="39-16, Ingye-ro 94beon-gil, Paldal-gu, Suwon-si, Gyeonggi-do"
-        />
+      <div className="flex flex-col gap-10 rounded-xl border border-neutral-100 p-4">
+        {favorites
+          ?.slice(0, 2)
+          .map((favorite) => (
+            <LocationCard key={favorite.id} locationinfo={favorite} />
+          ))}
       </div>
     </div>
   );
@@ -85,10 +128,10 @@ const MyList = () => {
 
 const MyProofShot = () => {
   const [total, setTotal] = useState(0);
-  const [proofshots, setProofshots] = useState<ProofShot["proof_shoots"]>([]);
+  const [proofshots, setProofshots] = useState<ProofShot["proof_shots"]>([]);
   interface ProofShot {
     total: number;
-    proof_shoots: {
+    proof_shots: {
       id: string;
       location_id: string;
       category: string;
@@ -105,7 +148,7 @@ const MyProofShot = () => {
       const data: ProofShot = await fetcherWithAuth
         .get(`api/v1/user/proof-shot`)
         .json();
-      setProofshots(data.proof_shoots);
+      setProofshots(data.proof_shots);
       setTotal(data.total);
     } catch (error) {
       console.error("Failed to fetch proof shots:", error);
@@ -119,17 +162,19 @@ const MyProofShot = () => {
 
   return (
     <div className="flex w-full flex-col gap-5 pr-1">
-      <Title title="My ProofShots" total={total} />
+      <Title title="My ProofShots 📷" total={total} />
       <div className="grid grid-cols-3 gap-1">
         {proofshots?.map((proofshot) => (
           <div
             key={proofshot.id} // 각 항목에 고유한 키를 사용
-            className="flex aspect-square items-center justify-center bg-neutral-200 pl-1 pr-1"
+            className="flex aspect-square items-center justify-center rounded-md border pl-1 pr-1"
           >
             <Image
               src={proofshot.image}
               alt={proofshot.title}
-              className="object-cover"
+              width={100}
+              height={100}
+              className="h-24 w-24 rounded-md object-scale-down"
             />
           </div>
         ))}
@@ -138,7 +183,18 @@ const MyProofShot = () => {
   );
 };
 
-const MyStamps = () => {
+const MyStamps = ({
+  setCountCategory,
+}: {
+  setCountCategory: React.Dispatch<
+    React.SetStateAction<{
+      K_POP: number;
+      DRAMA: number;
+      MOVIE: number;
+      NOVEL: number;
+    }>
+  >;
+}) => {
   interface Stamp {
     total: number;
     stamps: {
@@ -155,7 +211,9 @@ const MyStamps = () => {
 
   const getStamps = async () => {
     try {
-      const data: Stamp = await fetcherWithAuth.get(`api/v1/user/stamp`).json();
+      const data: Stamp = await fetcherWithAuth
+        .get(`api/v1/user/stamp?limit=100`)
+        .json();
       setStamps(data.stamps);
       setTotal(data.total);
     } catch (error) {
@@ -167,9 +225,18 @@ const MyStamps = () => {
     getStamps();
   }, []);
 
+  useEffect(() => {
+    stamps?.forEach((stamp) => {
+      setCountCategory((prev) => ({
+        ...prev,
+        [stamp.category]: prev[stamp.category] + 1,
+      }));
+    });
+  }, [stamps]);
+
   return (
     <div>
-      <Title title="My Stamps" total={total} />
+      <Title title="My Stamps 💟" total={total} />
       <div className="mx-auto mt-6 grid aspect-square max-w-xl grid-cols-3 gap-x-3 gap-y-3">
         {stamps?.map((stamp) => (
           <Stamp
@@ -179,30 +246,32 @@ const MyStamps = () => {
             category={stamp.category}
           />
         ))}
-
-        <Stamp title="Bongsuyuk" date="July 7, 2023" category="K_POP" />
-        <Stamp title="SKKU" date="July 7, 2023" category="DRAMA" />
-        <Stamp title="Busan" date="July 7, 2023" category="MOVIE" />
-        <Stamp title="SquidGame" date="July 7, 2023" category="DRAMA" />
-        <Stamp title="Namsan" date="July 7, 2023" category="MOVIE" />
-        <Stamp title="Theglory" date="July 7, 2023" category="MOVIE" />
-        <Stamp title="Bongsuyuk" date="July 7, 2023" category="DRAMA" />
-        <Stamp title="Bongsuyuk" date="July 7, 2023" category="K_POP" />
-        <Stamp title="Bongsuyuk" date="July 7, 2023" category="DRAMA" />
-        <Stamp title="Bongsuyuk" date="July 7, 2023" category="K_POP" />
-        <Stamp title="Bongsuyuk" date="July 7, 2023" category="NOVEL" />
       </div>
     </div>
   );
 };
 
-const MyStats = () => {
+const MyStats = ({
+  countCategory,
+}: {
+  countCategory: {
+    K_POP: number;
+    DRAMA: number;
+    MOVIE: number;
+    NOVEL: number;
+  };
+}) => {
   return (
     <div className="flex flex-col gap-2">
-      <Title title="My Stats" />
+      <Title title="My Stats 📊" />
       <div className="flex flex-col items-center justify-center pt-3">
         <PieChart
-          data={[50, 40, 30, 10]}
+          data={[
+            countCategory.K_POP,
+            countCategory.DRAMA,
+            countCategory.MOVIE,
+            countCategory.NOVEL,
+          ]}
           labels={["kpop", "drama", "movie", "novel"]}
         />
       </div>
@@ -212,8 +281,8 @@ const MyStats = () => {
 
 const Title = ({ title, total }: { title: string; total?: number }) => {
   return (
-    <div className="flex justify-between">
-      <p className="text-xl font-bold">{title}</p>
+    <div className="flex items-center justify-between">
+      <p className="text-lg font-semibold">{title}</p>
       {total !== undefined && (
         <div className="flex gap-2 self-end">
           <p className="font-semibold">TOTAL </p>
@@ -254,11 +323,11 @@ const RedirectModal = () => {
   );
 };
 
-const MyListModal = () => {
+const MyListModal = ({ favoriteList }: { favoriteList: FavoriteProps[] }) => {
   return (
     <div className="flex justify-end">
       <Dialog>
-        <DialogTrigger className="self-end rounded-md border-2 border-blue-200 bg-blue-50 px-3 py-1 text-sm text-black hover:bg-blue-400">
+        <DialogTrigger className="self-end rounded-2xl border border-blue-300 px-3 py-0.5 text-sm text-black">
           View All
         </DialogTrigger>
         <DialogContent className="h-[80%] w-[90%] max-w-lg rounded-lg bg-white p-6 shadow-lg sm:w-[60%]">
@@ -269,14 +338,8 @@ const MyListModal = () => {
           </DialogHeader>
           <ScrollArea className="h-full w-full overflow-y-auto">
             <div className="flex flex-col gap-4">
-              {[...Array(10)].map((_, index) => (
-                <LocationCard
-                  key={index}
-                  title={`Location ${index + 1}`}
-                  photo={`photo ${index + 1}`}
-                  description="This is a sample description for the location."
-                  address="39-16, Ingye-ro 94beon-gil, Paldal-gu, Suwon-si, Gyeonggi-do"
-                />
+              {favoriteList.map((favorite) => (
+                <LocationCard key={favorite.id} locationinfo={favorite} />
               ))}
             </div>
           </ScrollArea>

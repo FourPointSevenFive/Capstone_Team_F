@@ -19,11 +19,12 @@ export default function Stamp({
           height={40}
         />
       </div>
-      <div className="flex justify-center pt-1 text-sm text-gray-600">
+      <div className="overflow-hidden text-ellipsis whitespace-nowrap pt-1 text-sm text-gray-600">
         {title}
       </div>
-      <div className="flex justify-center pb-3 text-xs text-gray-600">
-        {date}
+
+      <div className="flex justify-center pb-3 text-[10px] text-gray-600">
+        {new Date(date).toString().slice(0, 15)}
       </div>
     </div>
   );
