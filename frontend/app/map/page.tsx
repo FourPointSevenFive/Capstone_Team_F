@@ -99,7 +99,8 @@ export default function Page() {
         ) : (
           <CategorySelect onSelect={(category) => setCategory(category)} />
         )}
-        <SearchBar />
+        {/* 
+        <SearchBar /> */}
       </div>
       <Suspense fallback={<MapSkeleton />}>
         <MapWithMarker

@@ -36,34 +36,34 @@ const PhotoUploader = ({ locationId }: { locationId?: number }) => {
     // ProofShotRequestDto를 JSON으로 변환하여 추가
     const proofShotRequestDto = {
       location_id: locationId,
-      description: "",
+      description: ".",
     };
-    formData.append("proof_shot", JSON.stringify(proofShotRequestDto)); // 서버에서 기대하는 이름으로 DTO 추가
-
-    // 이미지 파일 추가
-    formData.append("image", selectedFile);
 
     try {
+      // JSON 데이터를 Blob으로 추가하면서 Content-Type을 명시합니다.
+      const proofShotBlob = new Blob([JSON.stringify(proofShotRequestDto)], {
+        type: "application/json",
+      });
+      formData.append("proof_shot", proofShotBlob);
+      formData.append("image", selectedFile);
+
       const response = await fetcherWithAuth.post(
         "api/v1/user/proof-shot/upload",
         {
           body: formData,
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
         },
       );
 
       if (!response.ok) {
         const errorText = await response.text();
-        console.error("Server Response:", response.status, errorText);
+        //console.error("Server Response:", response.status, errorText);
         throw new Error(
           `Failed to upload photo: ${response.status} ${errorText}`,
         );
       }
 
       const result = await response.json();
-      console.log("Upload successful:", result);
+      //console.log("Upload successful:", result);
       alert("Upload successful!");
       setIsModalOpen(false); // 업로드 성공 시 모달 닫기
     } catch (error) {
@@ -93,7 +93,6 @@ const PhotoUploader = ({ locationId }: { locationId?: number }) => {
         ref={inputRef}
         type="file"
         accept="image/*"
-        name="proofshot"
         className="hidden"
         onChange={handleFileChange}
       />

@@ -46,7 +46,13 @@ interface FavoriteProps {
 
 export default function Page() {
   const { data: session, status } = useSession();
-  console.log(session);
+  //console.log(session);
+  const [countCategory, setCountCategory] = useState({
+    K_POP: 0,
+    DRAMA: 0,
+    MOVIE: 0,
+    NOVEL: 0,
+  });
 
   if (status === "unauthenticated") {
     return <RedirectModal />;
@@ -58,21 +64,25 @@ export default function Page() {
         <div className="flex flex-col justify-between">
           <Header />
         </div>
-        <Button
-          variant="ghost"
-          className="self-end p-0"
-          onClick={() => signOut()}
-        >
-          <CiLogout />
-          Log out
-        </Button>
+        <div className="flex items-center justify-between">
+          <p className="w-fit self-center border-b-2 border-blue-100 p-1 text-xl font-bold">
+            All Of Your Memories
+          </p>
+          <Button
+            variant="ghost"
+            className="self-end p-0"
+            onClick={() => signOut()}
+          >
+            <CiLogout />
+            Log out
+          </Button>
+        </div>
 
-        <p className="mt-4 w-fit self-center border-b-2 border-blue-100 p-1 text-xl font-bold"></p>
         <div className="flex flex-col gap-20">
           <MyList />
           <MyProofShot />
-          <MyStamps />
-          <MyStats />
+          <MyStamps setCountCategory={setCountCategory} />
+          <MyStats countCategory={countCategory} />
         </div>
       </div>
     </>
@@ -101,7 +111,7 @@ const MyList = () => {
 
   return (
     <div className="pt-10">
-      <div className="flex flex-col gap-2 pb-8 pl-1 pr-1">
+      <div className="flex flex-col gap-2 pb-2 pl-1 pr-1">
         <Title title="My List 💕 " total={total} />
         <MyListModal favoriteList={favorites} />
       </div>
@@ -118,10 +128,10 @@ const MyList = () => {
 
 const MyProofShot = () => {
   const [total, setTotal] = useState(0);
-  const [proofshots, setProofshots] = useState<ProofShot["proof_shoots"]>([]);
+  const [proofshots, setProofshots] = useState<ProofShot["proof_shots"]>([]);
   interface ProofShot {
     total: number;
-    proof_shoots: {
+    proof_shots: {
       id: string;
       location_id: string;
       category: string;
@@ -138,7 +148,7 @@ const MyProofShot = () => {
       const data: ProofShot = await fetcherWithAuth
         .get(`api/v1/user/proof-shot`)
         .json();
-      setProofshots(data.proof_shoots);
+      setProofshots(data.proof_shots);
       setTotal(data.total);
     } catch (error) {
       console.error("Failed to fetch proof shots:", error);
@@ -157,12 +167,14 @@ const MyProofShot = () => {
         {proofshots?.map((proofshot) => (
           <div
             key={proofshot.id} // 각 항목에 고유한 키를 사용
-            className="flex aspect-square items-center justify-center bg-neutral-200 pl-1 pr-1"
+            className="flex aspect-square items-center justify-center rounded-md border pl-1 pr-1"
           >
             <Image
               src={proofshot.image}
               alt={proofshot.title}
-              className="object-cover"
+              width={100}
+              height={100}
+              className="h-24 w-24 rounded-md object-scale-down"
             />
           </div>
         ))}
@@ -171,7 +183,18 @@ const MyProofShot = () => {
   );
 };
 
-const MyStamps = () => {
+const MyStamps = ({
+  setCountCategory,
+}: {
+  setCountCategory: React.Dispatch<
+    React.SetStateAction<{
+      K_POP: number;
+      DRAMA: number;
+      MOVIE: number;
+      NOVEL: number;
+    }>
+  >;
+}) => {
   interface Stamp {
     total: number;
     stamps: {
@@ -202,6 +225,15 @@ const MyStamps = () => {
     getStamps();
   }, []);
 
+  useEffect(() => {
+    stamps?.forEach((stamp) => {
+      setCountCategory((prev) => ({
+        ...prev,
+        [stamp.category]: prev[stamp.category] + 1,
+      }));
+    });
+  }, [stamps]);
+
   return (
     <div>
       <Title title="My Stamps 💟" total={total} />
@@ -219,13 +251,27 @@ const MyStamps = () => {
   );
 };
 
-const MyStats = () => {
+const MyStats = ({
+  countCategory,
+}: {
+  countCategory: {
+    K_POP: number;
+    DRAMA: number;
+    MOVIE: number;
+    NOVEL: number;
+  };
+}) => {
   return (
     <div className="flex flex-col gap-2">
       <Title title="My Stats 📊" />
       <div className="flex flex-col items-center justify-center pt-3">
         <PieChart
-          data={[50, 40, 30, 10]}
+          data={[
+            countCategory.K_POP,
+            countCategory.DRAMA,
+            countCategory.MOVIE,
+            countCategory.NOVEL,
+          ]}
           labels={["kpop", "drama", "movie", "novel"]}
         />
       </div>
@@ -281,7 +327,7 @@ const MyListModal = ({ favoriteList }: { favoriteList: FavoriteProps[] }) => {
   return (
     <div className="flex justify-end">
       <Dialog>
-        <DialogTrigger className="self-end rounded-2xl border border-blue-500 px-3 py-1 text-sm text-black">
+        <DialogTrigger className="self-end rounded-2xl border border-blue-300 px-3 py-0.5 text-sm text-black">
           View All
         </DialogTrigger>
         <DialogContent className="h-[80%] w-[90%] max-w-lg rounded-lg bg-white p-6 shadow-lg sm:w-[60%]">

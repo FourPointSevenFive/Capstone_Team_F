@@ -20,6 +20,7 @@ import { auth } from "@/lib/auth";
 import { Session } from "next-auth";
 import stampIcon from "@/public/icons/stamp.png";
 import PhotoUploader from "@/app/_components/PhotoUploader";
+import { useSession } from "next-auth/react";
 
 interface LocationImage {
   id: number;
@@ -123,14 +124,14 @@ function StampSection() {
       );
 
       if (response.ok) {
-        console.log("Stamp collected successfully:");
+        //console.log("Stamp collected successfully:");
         setStampCollected(true);
       } else {
-        console.error("Failed to collect stamp:");
+        //console.error("Failed to collect stamp:");
         // 실패 메시지 출력 등 추가 로직
       }
     } catch (error) {
-      console.error("Error during stamp collection:", error);
+      //console.error("Error during stamp collection:", error);
       // 네트워크 오류 또는 기타 에러 처리
     }
   };
@@ -185,17 +186,29 @@ function StampSection() {
 
 function ProofShoots({ locationId }: { locationId: number | undefined }) {
   interface ProofShotApiResponse {
-    proof_shots: string[];
+    proof_shots: ProofShotProps[];
     total: number;
   }
 
-  const [proofShots, setProofShots] = useState<string[]>([]);
+  interface ProofShotProps {
+    category: string;
+    created_at: string;
+    description: string;
+    id: number;
+    image: string;
+    location_id: number;
+    title: string;
+  }
+
+  const { status } = useSession();
+
+  const [proofShots, setProofShots] = useState<ProofShotProps[]>([]);
 
   const getProofShots = async () => {
     if (!locationId) return; // locationId가 없을 경우 함수 실행 중단
 
     try {
-      const response = await fetcherWithAuth.get(
+      const response = await fetcher.get(
         `api/v1/proof-shot/location?location_id=${locationId}`,
       );
       const data: ProofShotApiResponse = await response.json();
@@ -211,28 +224,26 @@ function ProofShoots({ locationId }: { locationId: number | undefined }) {
 
   useEffect(() => {
     getProofShots();
+    //console.log(proofShots);
   }, [locationId]);
-
-  const postProofShot = async () => {
-    // Add logic to post proof shot
-    console.log("Post proof shot functionality not implemented yet.");
-  };
 
   return (
     <div className="flex w-full flex-col gap-5 py-10">
       <div className="flex items-center justify-between">
         <h1 className="font-semibold">Proof Shoots</h1>
-        <PhotoUploader locationId={locationId ?? undefined} />
+        {status === "authenticated" && (
+          <PhotoUploader locationId={locationId ?? undefined} />
+        )}
       </div>
       <div className="grid grid-cols-3 gap-1">
-        {proofShots.length > 0 &&
+        {proofShots[0] &&
           proofShots.map((proofShot, index) => (
             <div
               key={index}
-              className="flex aspect-square items-center justify-center bg-neutral-200 pl-1 pr-1"
+              className="flex aspect-square items-center justify-center rounded-md border pr-1"
             >
               <Image
-                src={proofShot}
+                src={proofShot.image}
                 alt="proof shot"
                 className="object-cover"
                 width={40}
