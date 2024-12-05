@@ -2,8 +2,6 @@
 
 import Image from "next/image";
 import kheart from "@/public/kheart_gray.png";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
 import {
   Carousel,
   CarouselContent,
@@ -11,10 +9,9 @@ import {
   CarouselPrevious,
   CarouselNext,
 } from "@/components/ui/carousel";
-import { DialogueBox } from "./_components/DialogueBox";
 import { useLocationStore } from "@/stores/locationStore";
 import { calculateDistance } from "@/lib/calculateDistance";
-import { use, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { fetcher, fetcherWithAuth } from "@/lib/utils";
 import { auth } from "@/lib/auth";
 import { Session } from "next-auth";
@@ -55,7 +52,7 @@ export default function Page() {
         {loc?.description}
       </p>
       <StampSection />
-      <ProofShoots locationId={loc?.id ?? null} />
+      <ProofShoots locationId={loc?.id ?? undefined} />
     </div>
   );
 }
@@ -68,27 +65,22 @@ function StampSection() {
 
   useEffect(() => {
     // 현재 위치 가져오기
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        const { latitude, longitude } = position.coords;
+    navigator.geolocation.getCurrentPosition((position) => {
+      const { latitude, longitude } = position.coords;
 
-        // 거리 계산
-        const distance = calculateDistance(
-          latitude,
-          longitude,
-          37.555778909,
-          127.023026145,
-        );
+      // 거리 계산
+      const distance = calculateDistance(
+        latitude,
+        longitude,
+        37.555778909,
+        127.023026145,
+      );
 
-        // 1km 이하일 경우 GPS 활성화
-        if (distance <= 1) {
-          setGpsEnabled(true);
-        }
-      },
-      (error) => {
-        console.error("Error getting location:", error);
-      },
-    );
+      // 1km 이하일 경우 GPS 활성화
+      if (distance <= 1) {
+        setGpsEnabled(true);
+      }
+    });
   }, [loc]);
 
   const [session, setSession] = useState<Session | null>(null);
@@ -127,12 +119,14 @@ function StampSection() {
         //console.log("Stamp collected successfully:");
         setStampCollected(true);
       } else {
-        //console.error("Failed to collect stamp:");
-        // 실패 메시지 출력 등 추가 로직
+        const errorText = await response.text();
+        //console.error("Server Response:", response.status, errorText);
+        throw new Error(
+          `Failed to collect stamp: ${response.status} ${errorText}`,
+        );
       }
     } catch (error) {
-      //console.error("Error during stamp collection:", error);
-      // 네트워크 오류 또는 기타 에러 처리
+      console.error("Error collecting stamp:", error);
     }
   };
 

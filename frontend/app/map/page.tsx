@@ -1,7 +1,6 @@
 "use client";
 
 import Header from "@/app/_components/Header";
-import SearchBar from "../_components/SearchBar";
 import CustomBadge from "../_components/CustomBadge";
 import MapSkeleton from "../_components/MapSkeleton";
 import { Suspense, useEffect } from "react";
@@ -49,7 +48,7 @@ interface ApiResponse {
   locations: Location[];
 }
 
-export default function Page() {
+function MapPage() {
   const searchParams = useSearchParams().get("content_id");
   const [category, setCategory] = useState<string>("K_POP");
   const [locations, setLocations] = useState<ApiResponse>({
@@ -114,6 +113,14 @@ export default function Page() {
         currentLocationId={currentLocationId}
       />
     </div>
+  );
+}
+
+export default function Page() {
+  return (
+    <Suspense fallback={<MapSkeleton />}>
+      <MapPage />
+    </Suspense>
   );
 }
 

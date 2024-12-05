@@ -20,8 +20,6 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { NaverMap } from "react-naver-maps";
-import MapWithMarker from "../_components/NaverMap";
 
 const getFavoriteLocations = async () => {
   const data: FavoriteApiResponse = (await fetcherWithAuth
@@ -45,7 +43,7 @@ interface FavoriteProps {
 }
 
 export default function Page() {
-  const { data: session, status } = useSession();
+  const { status } = useSession();
   //console.log(session);
   const [countCategory, setCountCategory] = useState({
     K_POP: 0,

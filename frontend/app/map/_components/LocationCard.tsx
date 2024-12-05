@@ -4,9 +4,9 @@ import Link from "next/link";
 import { FaHeart } from "react-icons/fa";
 import Image from "next/image";
 import { useLocationStore } from "@/stores/locationStore";
-import { use, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { cn, fetcherWithAuth } from "@/lib/utils";
-import { get } from "http";
+
 import { useSession } from "next-auth/react";
 
 interface MyLocation {

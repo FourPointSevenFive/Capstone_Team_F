@@ -6,6 +6,7 @@ import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import Header from "../_components/Header";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Suspense } from "react";
 
 interface ContentResponseDto {
   id: number;
@@ -23,7 +24,7 @@ const getData = async (content: string) => {
   return data;
 };
 
-export default function SeeMore() {
+function SeeMore() {
   // next/navigation에서 useSearchParams 훅 사용
   const searchParams = useSearchParams();
   const content = searchParams.get("category");
@@ -77,5 +78,13 @@ export default function SeeMore() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function Page() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <SeeMore />
+    </Suspense>
   );
 }

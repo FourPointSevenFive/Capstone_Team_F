@@ -70,12 +70,14 @@ const PieChart: React.FC<PieChartProps> = ({ data, labels }) => {
     return category;
   };
 
+  type CategoryType = "K_POP" | "DRAMA" | "NOVEL" | "MOVIE";
+
   return (
     <div>
       <div className="flex items-center justify-center pb-2">
         <CustomBadge
           title={`${formatTitle(charTitle)} Maniac`}
-          category={charTitle}
+          category={charTitle as CategoryType}
         />
       </div>
       <Pie data={chartData} options={chartOptions} />

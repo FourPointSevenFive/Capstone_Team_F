@@ -3,7 +3,6 @@ import localFont from "next/font/local";
 import "./globals.css";
 import Script from "next/script";
 import AuthProvider from "./_components/AuthProvider";
-import { NavermapsProvider } from "react-naver-maps";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
