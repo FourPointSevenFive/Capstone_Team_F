@@ -114,13 +114,21 @@ export default function LocationCard({
       <div className="mb-4 flex items-center justify-between">
         <div className="w-64 text-sm font-bold">{locationinfo.title}</div>
         <div>
-          {status === "authenticated" && (
+          {status === "authenticated" ? (
             <div className="flex flex-col items-center">
               <FaHeart
                 className={
                   cn("size-6") +
                   (isFavorite ? " text-red-500" : " text-gray-500")
                 }
+                onClick={handleFavoriteClick}
+              />
+              <p className="text-sm text-neutral-500">{favoriteCnt}</p>
+            </div>
+          ) : (
+            <div className="flex flex-col items-center">
+              <FaHeart
+                className="size-6 text-gray-500"
                 onClick={handleFavoriteClick}
               />
               <p className="text-sm text-neutral-500">{favoriteCnt}</p>
