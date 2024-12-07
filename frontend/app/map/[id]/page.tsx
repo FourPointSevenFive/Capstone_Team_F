@@ -18,6 +18,7 @@ import { Session } from "next-auth";
 import stampIcon from "@/public/icons/stamp.png";
 import PhotoUploader from "@/app/_components/PhotoUploader";
 import { useSession } from "next-auth/react";
+import YouTube, { YouTubeProps } from "react-youtube";
 
 interface LocationImage {
   id: number;
@@ -47,6 +48,8 @@ export default function Page() {
       </div>
       <div className="w-full">
         <ImageCarousel images={loc?.images} />
+
+        <VideoInfo videoLink={loc?.video_link ?? ""} />
       </div>
       <p className="mb-6 self-start text-sm text-neutral-700">
         {loc?.description}
@@ -272,5 +275,52 @@ function ImageCarousel({ images }: { images: LocationImage[] | undefined }) {
       <CarouselPrevious className="border border-black bg-gray-200" />
       <CarouselNext className="bg-gray-200" />
     </Carousel>
+  );
+}
+
+function extractYoutubeId({ videoLink }: { videoLink: string }) {
+  try {
+    const url = new URL(videoLink);
+
+    // 1. 짧은 URL 형태 처리 (youtu.be)
+    if (url.hostname === "youtu.be") {
+      return url.pathname.slice(1); // 첫 번째 슬래시 제거하고 ID 반환
+    }
+
+    // 2. 일반 URL 형태 처리 (www.youtube.com)
+    if (url.hostname.includes("youtube.com")) {
+      const urlParams = new URLSearchParams(url.search);
+      return urlParams.get("v");
+    }
+
+    return null; // 유효하지 않은 YouTube URL
+  } catch (error) {
+    console.error("Invalid YouTube URL:", videoLink, error);
+    return null;
+  }
+}
+
+function VideoInfo({ videoLink }: { videoLink: string }) {
+  //youtube id 추출
+  const youtubeId = videoLink ? extractYoutubeId({ videoLink }) : " ";
+
+  console.log(videoLink, youtubeId);
+  const onPlayerReady: YouTubeProps["onReady"] = (event) => {
+    // access to player in all event handlers via event.target
+    event.target.pauseVideo();
+  };
+
+  const opts: YouTubeProps["opts"] = {
+    height: "200",
+    width: "250",
+    playerVars: {
+      autoplay: 1,
+    },
+  };
+
+  return (
+    <div className="mt-4 flex flex-col gap-5">
+      <YouTube videoId={youtubeId} opts={opts} onPlayerReady={onPlayerReady} />
+    </div>
   );
 }
